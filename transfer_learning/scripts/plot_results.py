@@ -8,14 +8,16 @@ import pandas as pd
 import seaborn as sns
 
 # --- CONFIGURATION ---
-RUN_NAME = 'ogbl-ddi'
-BASE_PATH = Path('/mnt/4tb/rachel_thesis/DDI/src/rachel')
-RESULTS_DIR = BASE_PATH / 'experiment_results' / RUN_NAME
-OUTPUT_DIR = BASE_PATH / 'plotting' / f'{RUN_NAME}_master'
+RUN_NAME = "ogbl-ddi"
+# TODO UPDATE PATH HERE
+BASE_PATH = Path("/mnt/4tb/rachel_thesis/DDI/src/rachel")
+RESULTS_DIR = BASE_PATH / "experiment_results" / RUN_NAME
+OUTPUT_DIR = BASE_PATH / "plotting" / f"{RUN_NAME}_master"
 
-CONFIDENCE_INTERVAL = 95 
+CONFIDENCE_INTERVAL = 95
 METRICS = ["loss", "accuracy", "auc", "ap", "f1", "recall", "test"]
 DASH_STYLES = {"random": "", "pretrained": (2, 2)}
+
 
 class PlotType(Enum):
     GLOBAL = auto()
@@ -27,18 +29,20 @@ class PlotType(Enum):
     BS_COMBINED = auto()
     BS_INDIVIDUAL = auto()
 
+
 def parse_details(folder_name):
     """Extracts Architecture, Scale, and Batch Size from directory names."""
-    arch = re.search(r'(L\d+).*(H\d+)', folder_name)
-    scale = re.search(r'(\d+x\d+)', folder_name)
+    arch = re.search(r"(L\d+).*(H\d+)", folder_name)
+    scale = re.search(r"(\d+x\d+)", folder_name)
     # Extracts digits immediately following '_bs'
-    bs = re.search(r'_bs(\d+)', folder_name)
-    
+    bs = re.search(r"_bs(\d+)", folder_name)
+
     return (
         f"{arch.group(1)}_{arch.group(2)}" if arch else "Unknown",
         scale.group(1) if scale else "Unknown_Scale",
-        bs.group(1) if bs else "Unknown_BS"
+        bs.group(1) if bs else "Unknown_BS",
     )
+
 
 def find_finished_subdir(experiment_dir: Path, prefix: str):
     for subdir in experiment_dir.iterdir():
@@ -46,6 +50,7 @@ def find_finished_subdir(experiment_dir: Path, prefix: str):
             if (subdir / "finished.txt").exists():
                 return subdir
     return None
+
 
 def load_data(root_dir, data_dir, force=False):
     cache_path = data_dir / "raw_data.csv"
@@ -60,51 +65,68 @@ def load_data(root_dir, data_dir, force=False):
         arch, scale, bs = parse_details(exp_dir.name)
         for variant in ["control", "pretrained"]:
             target_dir = find_finished_subdir(exp_dir, variant)
-            if not target_dir: continue
+            if not target_dir:
+                continue
             for csv_file in target_dir.glob("*.csv"):
                 df = pd.read_csv(csv_file)
-                df["initialization"] = "random" if variant == "control" else "pretrained"
+                df["initialization"] = (
+                    "random" if variant == "control" else "pretrained"
+                )
                 df["architecture"] = arch
                 df["scale"] = scale
-                df["batch_size"] = bs # Added to dataframe
+                df["batch_size"] = bs  # Added to dataframe
                 all_results.append(df)
-    
+
     if not all_results:
         raise ValueError(f"No valid experiment data found in {root_dir}")
 
     full_df = pd.concat(all_results, ignore_index=True)
     if "hits@k" in full_df.columns:
-        full_df["hits@k"] = pd.to_numeric(full_df["hits@k"], errors='coerce').fillna(0).astype(int)
+        full_df["hits@k"] = (
+            pd.to_numeric(full_df["hits@k"], errors="coerce").fillna(0).astype(int)
+        )
         full_df = full_df[full_df["hits@k"] > 0]
 
-    full_df = full_df.sort_values(by=["architecture", "scale", "batch_size"], ascending=True)
+    full_df = full_df.sort_values(
+        by=["architecture", "scale", "batch_size"], ascending=True
+    )
     full_df.to_csv(cache_path, index=False)
     return full_df
 
+
 def format_plot_data(df, metric, split_col, plot_type):
     plot_df = df.copy()
-    is_hits = (metric == "test" and "hits@k" in plot_df.columns)
-    
+    is_hits = metric == "test" and "hits@k" in plot_df.columns
+
     # Check if this is any of the "Combined" view types
-    is_combined = plot_type in [PlotType.SCALE_COMBINED, PlotType.ARCH_COMBINED, PlotType.BS_COMBINED]
-    
+    is_combined = plot_type in [
+        PlotType.SCALE_COMBINED,
+        PlotType.ARCH_COMBINED,
+        PlotType.BS_COMBINED,
+    ]
+
     if is_hits:
         if is_combined:
             label = f"{split_col} & metric"
-            plot_df[label] = plot_df[split_col].astype(str) + " hits@" + plot_df["hits@k"].astype(str)
+            plot_df[label] = (
+                plot_df[split_col].astype(str)
+                + " hits@"
+                + plot_df["hits@k"].astype(str)
+            )
         else:
             label = "K Value"
             plot_df[label] = plot_df["hits@k"].astype(str)
         s_col = label
     else:
         s_col = split_col
-    
+
     split_name = s_col.title().replace("_", " ")
     plot_df.rename(columns={s_col: split_name}, inplace=True)
     style_name = "Initialization"
     plot_df.rename(columns={"initialization": style_name}, inplace=True)
-    
+
     return plot_df, split_name, style_name
+
 
 def get_title(metric_label, plot_type, group):
     if plot_type == PlotType.GLOBAL:
@@ -122,43 +144,58 @@ def get_title(metric_label, plot_type, group):
         return f"{metric_label} Across Batch Sizes ({CONFIDENCE_INTERVAL}% CI)"
     if plot_type == PlotType.BS_INDIVIDUAL:
         return f"{metric_label} for Batch Size: {group} ({CONFIDENCE_INTERVAL}% CI)"
-    
+
     return f"{metric_label} Plot"
+
 
 def plot_line(df, metric, output_folder, split_col, plot_type, force=False, group=None):
     fname = "hits_at_k.png" if metric == "test" else f"{metric}.png"
     save_path = output_folder / fname
-    if save_path.exists() and not force: return
+    if save_path.exists() and not force:
+        return
 
     plot_df, split_name, style_name = format_plot_data(df, metric, split_col, plot_type)
     metric_label = "hits@k" if metric == "test" else metric
-    metric_label = metric_label.upper() if len(metric_label) < 4 else metric_label.capitalize()
+    metric_label = (
+        metric_label.upper() if len(metric_label) < 4 else metric_label.capitalize()
+    )
     title = get_title(metric_label, plot_type, group)
 
     plt.figure(figsize=(14, 8))
     sns.set_style("whitegrid")
-    
+
     sns.lineplot(
-        data=plot_df, x="epoch", y=metric, hue=split_name, style=style_name,
-        dashes=DASH_STYLES, errorbar=('ci', CONFIDENCE_INTERVAL), palette="husl", linewidth=1.8, alpha=0.8
+        data=plot_df,
+        x="epoch",
+        y=metric,
+        hue=split_name,
+        style=style_name,
+        dashes=DASH_STYLES,
+        errorbar=("ci", CONFIDENCE_INTERVAL),
+        palette="husl",
+        linewidth=1.8,
+        alpha=0.8,
     )
 
     plt.xlabel("Epoch")
     plt.ylabel(metric_label)
     plt.title(title, fontsize=14, pad=15)
-    plt.legend(title="Legend", bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0.0)
+    plt.legend(
+        title="Legend", bbox_to_anchor=(1.02, 1), loc="upper left", borderaxespad=0.0
+    )
     plt.tight_layout()
-    
+
     save_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(save_path, dpi=200, bbox_inches='tight')
+    plt.savefig(save_path, dpi=200, bbox_inches="tight")
     plt.close()
+
 
 def generate_section(df, base_path, split_col, force=False):
     # Mapping split columns to PlotTypes
     type_map = {
         "scale": (PlotType.SCALE_COMBINED, PlotType.SCALE_INDIVIDUAL),
         "architecture": (PlotType.ARCH_COMBINED, PlotType.ARCH_INDIVIDUAL),
-        "batch_size": (PlotType.BS_COMBINED, PlotType.BS_INDIVIDUAL)
+        "batch_size": (PlotType.BS_COMBINED, PlotType.BS_INDIVIDUAL),
     }
     comb_type, ind_type = type_map[split_col]
 
@@ -166,17 +203,32 @@ def generate_section(df, base_path, split_col, force=False):
     for m in METRICS:
         if m in df.columns:
             plot_line(df, m, base_path / "combined", split_col, comb_type, force)
-    
+
     print(f"\n  [SUB-SECTION] Individual")
     for group in df[split_col].unique():
         group_df = df[df[split_col] == group]
         for m in METRICS:
             if m in group_df.columns:
-                plot_line(group_df, m, base_path / "individual" / str(group), "initialization", ind_type, force, group)
+                plot_line(
+                    group_df,
+                    m,
+                    base_path / "individual" / str(group),
+                    "initialization",
+                    ind_type,
+                    force,
+                    group,
+                )
+
 
 def main(args):
     # Added "split_by_batch_size" to directory init
-    for sub in ["data", "global", "split_by_architecture", "split_by_scale", "split_by_batch_size"]:
+    for sub in [
+        "data",
+        "global",
+        "split_by_architecture",
+        "split_by_scale",
+        "split_by_batch_size",
+    ]:
         (OUTPUT_DIR / sub).mkdir(parents=True, exist_ok=True)
 
     df = load_data(RESULTS_DIR, OUTPUT_DIR / "data", force=args.force)
@@ -184,10 +236,19 @@ def main(args):
     print("\n[SECTION 1/4] Global Aggregate")
     for m in METRICS:
         if m in df.columns:
-            plot_line(df, m, OUTPUT_DIR / "global", "initialization", PlotType.GLOBAL, args.force)
+            plot_line(
+                df,
+                m,
+                OUTPUT_DIR / "global",
+                "initialization",
+                PlotType.GLOBAL,
+                args.force,
+            )
 
     print("\n[SECTION 2/4] Architecture Analysis")
-    generate_section(df, OUTPUT_DIR / "split_by_architecture", "architecture", args.force)
+    generate_section(
+        df, OUTPUT_DIR / "split_by_architecture", "architecture", args.force
+    )
 
     print("\n[SECTION 3/4] Scale Analysis")
     generate_section(df, OUTPUT_DIR / "split_by_scale", "scale", args.force)
@@ -197,8 +258,11 @@ def main(args):
 
     print(f"\nPipeline Complete. Outputs: {OUTPUT_DIR}")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Thesis Plotting Suite")
-    parser.add_argument("--force", action="store_true", help="Overwrite existing plots/cache")
+    parser.add_argument(
+        "--force", action="store_true", help="Overwrite existing plots/cache"
+    )
     args = parser.parse_args()
     main(args)
