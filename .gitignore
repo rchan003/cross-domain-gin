@@ -1,0 +1,8 @@
+# Python specific caches
+**/__pycache__/
+
+# 
+L2S-main/*
+DDI/dataset/*
+DDI/logs/*
+transfer/*
