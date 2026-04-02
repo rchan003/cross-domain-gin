@@ -1,1 +1,1 @@
-# Cross Domain Transfer Learning with Graph Isomorphism Networks (GIN)
+# Open Cross Domain Transfer Learning with Graph Isomorphism Networks (GIN)
