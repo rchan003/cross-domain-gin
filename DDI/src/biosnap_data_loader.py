@@ -4,15 +4,20 @@ import torch
 from sklearn.model_selection import train_test_split
 from torch_geometric.data import Data, Dataset
 
+# TODO: UPDATE PATHS HERE (eg path='./dataset')
+DATA_PATH = "/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/dataset"
+
 
 class BioSnapDDIDataset(Dataset):
-    def __init__(self, name='biosnapddi', path='./dataset', transform=None, pre_transform=None):
+    def __init__(
+        self, name="biosnapddi", path=DATA_PATH, transform=None, pre_transform=None
+    ):
         self.name = name
         self.transform = transform
         self.pre_transform = pre_transform
         self.path = path
-        self.train_df = pd.read_csv(f'{path}/{name}/raw/train.csv')
-        self.test_df = pd.read_csv(f'{path}/{name}/raw/test.csv')
+        self.train_df = pd.read_csv(f"{path}/{name}/raw/train.csv")
+        self.test_df = pd.read_csv(f"{path}/{name}/raw/test.csv")
         self.process()
 
     def process(self):
@@ -23,9 +28,9 @@ class BioSnapDDIDataset(Dataset):
         self.test_data = self._convert_to_pyg_data(self.test_df)
 
     def _convert_to_pyg_data(self, df):
-        smiles1 = df['smile1'].tolist()
-        smiles2 = df['smile2'].tolist()
-        labels = df['label'].tolist()
+        smiles1 = df["smile1"].tolist()
+        smiles2 = df["smile2"].tolist()
+        labels = df["label"].tolist()
 
         unique_smiles = list(set(smiles1 + smiles2))
         smiles_to_index = {smile: idx for idx, smile in enumerate(unique_smiles)}
@@ -49,6 +54,7 @@ class BioSnapDDIDataset(Dataset):
         data.index_to_smiles = {idx: smile for smile, idx in smiles_to_index.items()}
 
         return data
+
     def get(self, idx):
         if idx == 0:
             return self.train_data
@@ -65,8 +71,8 @@ class BioSnapDDIDataset(Dataset):
 
     def to_dgl_graph(self, pyg_data):
         g = dgl.graph((pyg_data.edge_index[0], pyg_data.edge_index[1]))
-        g.ndata['feat'] = pyg_data.x
-        g.edata['label'] = pyg_data.edge_attr
+        g.ndata["feat"] = pyg_data.x
+        g.edata["label"] = pyg_data.edge_attr
 
         # Store SMILES mappings in the DGL graph
         g.smiles_to_index = pyg_data.smiles_mapping  # {SMILES: node_id}
@@ -77,14 +83,14 @@ class BioSnapDDIDataset(Dataset):
     def to_dgl_graph_with_node_asgraph(self, pyg_data):
         # Convert PyTorch Geometric data to DGL graph
         g = dgl.graph((pyg_data.edge_index[0], pyg_data.edge_index[1]))
-        g.ndata['feat'] = pyg_data.x
+        g.ndata["feat"] = pyg_data.x
 
         # Create a new graph for each node
         node_graphs = []
         for i in range(g.num_nodes()):
             # Create a new graph with a single node
             node_g = dgl.graph(([], []), num_nodes=1)
-            node_g.ndata['feat'] = g.ndata['feat'][i].view(1, -1)
+            node_g.ndata["feat"] = g.ndata["feat"][i].view(1, -1)
             node_graphs.append(node_g)
 
         return g, node_graphs
@@ -95,14 +101,22 @@ class BioSnapDDIDataset(Dataset):
         test_g = self.to_dgl_graph(self.test_data)
 
         # Extract positive and negative edges from the training and test sets
-        train_pos_edges = self.train_data.edge_index[:, self.train_data.edge_attr == 1].t()
-        train_neg_edges = self.train_data.edge_index[:, self.train_data.edge_attr == 0].t()
+        train_pos_edges = self.train_data.edge_index[
+            :, self.train_data.edge_attr == 1
+        ].t()
+        train_neg_edges = self.train_data.edge_index[
+            :, self.train_data.edge_attr == 0
+        ].t()
         test_pos_edges = self.test_data.edge_index[:, self.test_data.edge_attr == 1].t()
         test_neg_edges = self.test_data.edge_index[:, self.test_data.edge_attr == 0].t()
 
         # Randomly sample 20% of the positive and negative edges for validation
-        train_pos_edges, valid_pos_edges = train_test_split(train_pos_edges.numpy(), test_size=0.2, random_state=42)
-        train_neg_edges, valid_neg_edges = train_test_split(train_neg_edges.numpy(), test_size=0.2, random_state=42)
+        train_pos_edges, valid_pos_edges = train_test_split(
+            train_pos_edges.numpy(), test_size=0.2, random_state=42
+        )
+        train_neg_edges, valid_neg_edges = train_test_split(
+            train_neg_edges.numpy(), test_size=0.2, random_state=42
+        )
 
         # Convert back to torch tensors
         train_pos_edges = torch.tensor(train_pos_edges, dtype=torch.long)
@@ -114,7 +128,7 @@ class BioSnapDDIDataset(Dataset):
         split_edge = {
             "train": {"edge": train_pos_edges, "edge_neg": train_neg_edges},
             "valid": {"edge": valid_pos_edges, "edge_neg": valid_neg_edges},
-            "test": {"edge": test_pos_edges, "edge_neg": test_neg_edges}
+            "test": {"edge": test_pos_edges, "edge_neg": test_neg_edges},
         }
 
         # Check class imbalance
@@ -132,14 +146,26 @@ class BioSnapDDIDataset(Dataset):
         test_neg_count = split_edge["test"]["edge_neg"].size(0)
 
         # Print the counts
-        print(f"Training set - Positive edges: {train_pos_count}, Negative edges: {train_neg_count}")
-        print(f"Validation set - Positive edges: {valid_pos_count}, Negative edges: {valid_neg_count}")
-        print(f"Test set - Positive edges: {test_pos_count}, Negative edges: {test_neg_count}")
+        print(
+            f"Training set - Positive edges: {train_pos_count}, Negative edges: {train_neg_count}"
+        )
+        print(
+            f"Validation set - Positive edges: {valid_pos_count}, Negative edges: {valid_neg_count}"
+        )
+        print(
+            f"Test set - Positive edges: {test_pos_count}, Negative edges: {test_neg_count}"
+        )
 
         # Calculate the ratio of positive to negative edges
-        train_ratio = train_pos_count / train_neg_count if train_neg_count > 0 else float('inf')
-        valid_ratio = valid_pos_count / valid_neg_count if valid_neg_count > 0 else float('inf')
-        test_ratio = test_pos_count / test_neg_count if test_neg_count > 0 else float('inf')
+        train_ratio = (
+            train_pos_count / train_neg_count if train_neg_count > 0 else float("inf")
+        )
+        valid_ratio = (
+            valid_pos_count / valid_neg_count if valid_neg_count > 0 else float("inf")
+        )
+        test_ratio = (
+            test_pos_count / test_neg_count if test_neg_count > 0 else float("inf")
+        )
 
         print(f"Training set - Positive to Negative ratio: {train_ratio}")
         print(f"Validation set - Positive to Negative ratio: {valid_ratio}")

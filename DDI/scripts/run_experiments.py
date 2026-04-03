@@ -10,23 +10,25 @@ from typing import List
 
 # TODO: make some learning rate schedule and hyperparameter tuning thing then run exerpiments with best settings
 
-#python3 src/main_rachel_gin.py --dataset "ogbl-ddi" --pretrained_path "/mnt/4tb/rachel_thesis/L2S-main/saved_rachel_model/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1/checkpoints/best_gin_incumbent.pth" --init_mode "pretrained" --epochs 100 --batch_size 18000 --lr 1e-6
+# python3 src/train.py --dataset "ogbl-ddi" --pretrained_path "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1/checkpoints/best_gin_incumbent.pth" --init_mode "pretrained" --epochs 100 --batch_size 18000 --lr 1e-6
 
-# cd /mnt/4tb/rachel_thesis/DDI
-# RUN COMMAND:  nohup python3 -u src/runner_rachel.py > runner.log 2>&1 &
+# cd /mnt/4tb/rachel_thesis/cross-domain-gin/DDI
+# RUN COMMAND:  nohup python3 -u src/run_experiments.py > runner.log 2>&1 &
 # KILL PROCESS: kill <PID>
-# GET PID:      ps aux | grep runner_rachel.py 
+# GET PID:      ps aux | grep run_experiments.py
 # Get nvidia processes: nvidia-smi
 
 # Current pid: 2044683 (CHECK BEFORE KILLING!!!)
 
 # Name of training file
-EXPERIMENT_SCRIPT = "/mnt/4tb/rachel_thesis/DDI/src/main_rachel_gin.py"
-SAVED_MODEL_DIR = "/mnt/4tb/rachel_thesis/L2S-main/saved_rachel_model"
+# TODO UPDATE PATHS HERE
+EXPERIMENT_SCRIPT = "/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/scripts/train.py"
+SAVED_MODEL_DIR = "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results"
 
-# Root directories for results 
-LOG_ROOT_DIR = Path("/mnt/4tb/rachel_thesis/DDI/src/rachel/experiment_run_logs")
-RESULTS_ROOT_DIR = Path("/mnt/4tb/rachel_thesis/DDI/src/rachel/experiment_results")
+# Root directories for results
+LOG_ROOT_DIR = Path("/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/logs")
+RESULTS_ROOT_DIR = Path("/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/results")
+
 
 def build_command(config: dict) -> List[str]:
     cmd = [sys.executable, "-u", EXPERIMENT_SCRIPT]
@@ -41,6 +43,7 @@ def build_command(config: dict) -> List[str]:
 
     return cmd
 
+
 def build_run_name(config: dict) -> str:
     # 1. Map long keys to short identifiers
     key_map = {
@@ -51,38 +54,47 @@ def build_run_name(config: dict) -> str:
         "epochs": "ep",
         "lr": "lr",
         "num_neg_per_pos": "neg",
-        "pretrained_path": "pre"
+        "pretrained_path": "pre",
     }
 
     # 2. Define what is actually important to see in the filename
     # (Exclude things like device, eval_steps, or runs)
-    important_keys = ["init_mode", "loss_function", "lr", "batch_size", "pretrained_path"]
-    
+    important_keys = [
+        "init_mode",
+        "loss_function",
+        "lr",
+        "batch_size",
+        "pretrained_path",
+    ]
+
     parts = []
     for k in important_keys:
         if k not in config:
             continue
-            
+
         v = config[k]
         short_k = key_map.get(k, k)
 
         # Handle the pretrained path string specifically
         if k == "pretrained_path" and v is not None:
             # Gets just the specific experiment folder name
-            v = Path(v).parents[1].name 
+            v = Path(v).parents[1].name
             # If the folder name itself is too long, take the last 30 chars
             if len(v) > 30:
                 v = "..." + v[-27:]
-        
+
         # Shorten loss function names
-        if v == "binary_cross_entropy": v = "bce"
-        if v == "pairwise_ranking": v = "rank"
+        if v == "binary_cross_entropy":
+            v = "bce"
+        if v == "pairwise_ranking":
+            v = "rank"
 
         parts.append(f"{short_k}={v}")
 
     # 3. Add a timestamp at the front so files sort chronologically
     timestamp = time.strftime("%m%d_%H%M")
     return f"{timestamp}__{'__'.join(parts)}"
+
 
 def run_experiment(log_path, run_name: str, config: dict) -> int:
     cmd = build_command(config)
@@ -96,6 +108,7 @@ def run_experiment(log_path, run_name: str, config: dict) -> int:
 
     return process.returncode
 
+
 def get_saved_models():
     paths = [
         p.resolve()
@@ -103,10 +116,11 @@ def get_saved_models():
     ]
     return paths
 
+
 def main():
-    # Name of this set of this experiments 
-    experiment_set_name: str = "ogbl-ddi" # NOTE: Update this
-    save_results: bool = True                # NOTE: Update this
+    # Name of this set of this experiments
+    experiment_set_name: str = "ogbl-ddi"  # NOTE: Update this
+    save_results: bool = True  # NOTE: Update this
 
     # Update output paths
     log_dir = LOG_ROOT_DIR / experiment_set_name
@@ -118,7 +132,7 @@ def main():
     # Put the parameters you want to vary here
     search_space = {
         "init_mode": ["pretrained", "random"],
-        #"batch_size": [10000],
+        # "batch_size": [10000],
     }
 
     # Optional fixed parameters for every run
@@ -131,7 +145,7 @@ def main():
         "batch_size": 18000,
         "epochs": 100,
         "eval_steps": 1,
-        "lr": 1e-6, # TODO: try to tune lr 
+        "lr": 1e-6,  # TODO: try to tune lr
         "dropout": 0.1,
         "num_neg_per_pos": 1,
         "results_dir": results_dir,
@@ -147,7 +161,9 @@ def main():
     global_idx = 0
 
     # For ETA estimates
-    num_experiments = math.prod(len(search_space[k]) for k in keys) * len(saved_models_list)
+    num_experiments = math.prod(len(search_space[k]) for k in keys) * len(
+        saved_models_list
+    )
     start_time = time.time()
 
     # To store runner logs
@@ -164,25 +180,33 @@ def main():
             config.update(dict(zip(keys, values)))
             config.update({"pretrained_path": str(saved_model)})
 
-            # Parse arguments and create run name 
+            # Parse arguments and create run name
             args = Namespace(**config)
             run_name = build_run_name(config)
 
             # Create the runner log file
             log_path = log_dir / f"{run_name}.log"
 
-            #Run the Experiment
-            return_code = run_experiment(log_path=log_path, run_name=run_name, config=config)
+            # Run the Experiment
+            return_code = run_experiment(
+                log_path=log_path, run_name=run_name, config=config
+            )
             results.append((config, return_code))
 
             # Determine the status
-            experiment_status = "SUCCESS" if return_code == 0 else f"FAILED (code={return_code})"
+            experiment_status = (
+                "SUCCESS" if return_code == 0 else f"FAILED (code={return_code})"
+            )
 
             # Calculate ETA
             t2 = time.time()
             avg_experiment_time = (t2 - start_time) / (global_idx)
-            eta = timedelta(seconds=int((num_experiments - (global_idx)) * avg_experiment_time))
-            print(f"Finished Experiment {global_idx} | Status: {experiment_status} | ETA: {eta}")
+            eta = timedelta(
+                seconds=int((num_experiments - (global_idx)) * avg_experiment_time)
+            )
+            print(
+                f"Finished Experiment {global_idx} | Status: {experiment_status} | ETA: {eta}"
+            )
 
     # Output result of all experiments
     print("\nAll experiments finished.\n")
