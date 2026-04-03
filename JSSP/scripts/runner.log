@@ -1,0 +1,384 @@
+nohup: ignoring input
+
+EXPERIMENT 1 OF 48
+Skipping existing experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1
+
+EXPERIMENT 2 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 2 | Status: SUCCESS | ETA: 0:00:41
+
+EXPERIMENT 3 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 3 | Status: SUCCESS | ETA: 2:09:18
+
+EXPERIMENT 4 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 4 | Status: SUCCESS | ETA: 3:52:58
+
+EXPERIMENT 5 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 5 | Status: SUCCESS | ETA: 4:41:01
+
+EXPERIMENT 6 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 6 | Status: SUCCESS | ETA: 5:40:56
+
+EXPERIMENT 7 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 7 | Status: SUCCESS | ETA: 5:21:41
+
+EXPERIMENT 8 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 8 | Status: SUCCESS | ETA: 4:34:45
+
+EXPERIMENT 9 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 9 | Status: SUCCESS | ETA: 4:34:27
+
+EXPERIMENT 10 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 10 | Status: SUCCESS | ETA: 4:47:54
+
+EXPERIMENT 11 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 11 | Status: SUCCESS | ETA: 4:53:43
+
+EXPERIMENT 12 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 12 | Status: SUCCESS | ETA: 5:11:04
+
+EXPERIMENT 13 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 13 | Status: SUCCESS | ETA: 4:57:01
+
+EXPERIMENT 14 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 14 | Status: SUCCESS | ETA: 4:27:59
+
+EXPERIMENT 15 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 15 | Status: SUCCESS | ETA: 4:22:21
+
+EXPERIMENT 16 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 16 | Status: SUCCESS | ETA: 4:25:15
+
+EXPERIMENT 17 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 17 | Status: SUCCESS | ETA: 4:23:56
+
+EXPERIMENT 18 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 18 | Status: SUCCESS | ETA: 4:29:41
+
+EXPERIMENT 19 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 19 | Status: SUCCESS | ETA: 4:17:17
+
+EXPERIMENT 20 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 20 | Status: SUCCESS | ETA: 3:56:01
+
+EXPERIMENT 21 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 21 | Status: SUCCESS | ETA: 3:48:19
+
+EXPERIMENT 22 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 22 | Status: SUCCESS | ETA: 3:44:55
+
+EXPERIMENT 23 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 23 | Status: SUCCESS | ETA: 3:40:09
+
+EXPERIMENT 24 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin_NAN_0.0001_10_500_64_640_1.log
+Finished Experiment 24 | Status: SUCCESS | ETA: 3:39:56
+
+EXPERIMENT 25 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 25 | Status: SUCCESS | ETA: 3:28:32
+
+EXPERIMENT 26 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 26 | Status: SUCCESS | ETA: 3:11:49
+
+EXPERIMENT 27 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 27 | Status: SUCCESS | ETA: 3:03:23
+
+EXPERIMENT 28 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 28 | Status: SUCCESS | ETA: 2:58:10
+
+EXPERIMENT 29 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 29 | Status: SUCCESS | ETA: 2:51:22
+
+EXPERIMENT 30 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 3 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 30 | Status: SUCCESS | ETA: 2:47:27
+
+EXPERIMENT 31 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 31 | Status: SUCCESS | ETA: 2:36:52
+
+EXPERIMENT 32 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 32 | Status: SUCCESS | ETA: 2:23:03
+
+EXPERIMENT 33 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 33 | Status: SUCCESS | ETA: 2:14:18
+
+EXPERIMENT 34 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 34 | Status: SUCCESS | ETA: 2:07:24
+
+EXPERIMENT 35 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 35 | Status: SUCCESS | ETA: 1:59:37
+
+EXPERIMENT 36 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 128 --lr 0.0001 --embedding_layer 4 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 36 | Status: SUCCESS | ETA: 1:53:13
+
+EXPERIMENT 37 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 37 | Status: SUCCESS | ETA: 1:43:13
+
+EXPERIMENT 38 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 38 | Status: SUCCESS | ETA: 1:31:22
+
+EXPERIMENT 39 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 39 | Status: SUCCESS | ETA: 1:22:29
+
+EXPERIMENT 40 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 40 | Status: SUCCESS | ETA: 1:14:33
+
+EXPERIMENT 41 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 41 | Status: SUCCESS | ETA: 1:05:58
+
+EXPERIMENT 42 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 3 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_3_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 42 | Status: SUCCESS | ETA: 0:58:02
+
+EXPERIMENT 43 OF 48
+Experiment was not complete before.
+Running experiment: 10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 10 --m 10
+Logging to: experiment_runner_logs/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 43 | Status: SUCCESS | ETA: 0:48:10
+
+EXPERIMENT 44 OF 48
+Experiment was not complete before.
+Running experiment: 10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 10 --m 15
+Logging to: experiment_runner_logs/10x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 44 | Status: SUCCESS | ETA: 0:37:39
+
+EXPERIMENT 45 OF 48
+Experiment was not complete before.
+Running experiment: 15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 15 --m 10
+Logging to: experiment_runner_logs/15x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 45 | Status: SUCCESS | ETA: 0:28:20
+
+EXPERIMENT 46 OF 48
+Experiment was not complete before.
+Running experiment: 15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 15 --m 15
+Logging to: experiment_runner_logs/15x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 46 | Status: SUCCESS | ETA: 0:19:11
+
+EXPERIMENT 47 OF 48
+Experiment was not complete before.
+Running experiment: 20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 20 --m 10
+Logging to: experiment_runner_logs/20x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 47 | Status: SUCCESS | ETA: 0:09:42
+
+EXPERIMENT 48 OF 48
+Experiment was not complete before.
+Running experiment: 20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1
+Command: /mnt/4tb/rachel_thesis/conda_envs/l2s_new_torch/bin/python3 -u n_step_reinforce_rachel_refactor.py --l 1 --h 99 --init_type fdd-divide-mwkr --reward_type yaoxin --gamma 1.0 --policy_layer 4 --heads 1 --drop_out 0.0 --steps_learn 10 --transit 500 --batch_size 64 --episodes 640 --step_validation 1 --embedding_type gin+dghan --hidden_dim 256 --lr 0.0001 --embedding_layer 4 --j 20 --m 15
+Logging to: experiment_runner_logs/20x15[1,99]_fdd-divide-mwkr_yaoxin_1.0_256_4_4_gin+dghan_1_0.0_0.0001_10_500_64_640_1.log
+Finished Experiment 48 | Status: SUCCESS | ETA: 0:00:00
+
+All experiments finished.
+
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 128, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 3, 'j': 20, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 10, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 15, 'm': 15}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 10}
+SUCCESS: {'l': 1, 'h': 99, 'init_type': 'fdd-divide-mwkr', 'reward_type': 'yaoxin', 'gamma': 1.0, 'policy_layer': 4, 'heads': 1, 'drop_out': 0.0, 'steps_learn': 10, 'transit': 500, 'batch_size': 64, 'episodes': 640, 'step_validation': 1, 'embedding_type': 'gin+dghan', 'hidden_dim': 256, 'lr': 0.0001, 'embedding_layer': 4, 'j': 20, 'm': 15}
