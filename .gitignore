@@ -1,8 +1,13 @@
-# Python specific caches
+# General
 **/__pycache__/
+settings.json
 
-# 
-L2S-main/*
-DDI/dataset/*
+# JSSP
+JSSP/logs/*
+JSSP/results/*
+
+# DDI 
 DDI/logs/*
-transfer/*
+DDI/results/*
+
+transfer_learning/analysis/*
