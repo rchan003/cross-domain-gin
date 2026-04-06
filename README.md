@@ -17,6 +17,9 @@ The core algorithms and ideas were derived from the work of [Zhang et al.] and [
 TODO: Update with actual repo structure
 ```
 
+## 📦 Requirements
+- Python 3.8
+- git-lfs
 
 ## ⚙️ Environment Setup
 
