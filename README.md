@@ -50,14 +50,14 @@ python scripts/analyze_results.py # TODO add parse args to scripts
 
 ## 📚 Citations
 ### JSSP
-The code in the L2S folder is based on the work of [Zhang et al.] in their paper "Deep Reinforcement Learning Guided Improvement Heuristic for Job Shop Scheduling". Though their code has been refactored and adapted for these experiments, the core algorithm and ideas are derived from their research. Their original repository can be found [here](https://github.com/zcaicaros/L2S). If you make use of the code/experiment or L2S algorithm in your work, please cite their paper below. 
+The code in the L2S folder is based on the work of [Zhang et al.] in their paper "Deep Reinforcement Learning Guided Improvement Heuristic for Job Shop Scheduling". Their original repository can be found [here](https://github.com/zcaicaros/L2S). If you make use of the code/experiment or L2S algorithm in your work, please cite their paper below. 
 
 ```text
 Cong Zhang, Zhiguang Cao, Wen Song, Yaoxin Wu, & Jie Zhang. (2024). Deep Reinforcement Learning Guided Improvement Heuristic for Job Shop Scheduling.
 ```
 
 ### DDI 
-The code in the DDI folder is based on the work of [Abbas et al.] in their paper "Graph Neural Network-Based Drug-Drug Interaction Prediction". Though their code has been refactored and adapted for these experiments, the core training algorithm was derived from their research. Their original repository can be found [here](https://github.com/khushnood/DrugDruginteractionPredictionBasedOnGNN). If you make use of the code/experiment in your work, please cite their paper below.
+The code in the DDI folder is based on the work of [Abbas et al.] in their paper "Graph Neural Network-Based Drug-Drug Interaction Prediction". Their original repository can be found [here](https://github.com/khushnood/DrugDruginteractionPredictionBasedOnGNN). If you make use of the code/experiment in your work, please cite their paper below.
 
 ```text
 Abbas, K., Hao, C., Yong, X. et al. Graph neural network-based drug-drug interaction prediction. Sci Rep 15, 30340 (2025). https://doi.org/10.1038/s41598-025-12936-1

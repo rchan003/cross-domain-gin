@@ -442,6 +442,11 @@ class RL2S4JSSP:
         print(finish_message)
 
 
+def main(args):
+    agent = RL2S4JSSP(args)
+    agent.train()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DRL-LSJSP")
     # env parameters
@@ -474,5 +479,4 @@ if __name__ == "__main__":
     )  # TODO: Edited, used to be 10
     args = parser.parse_args()
 
-    agent = RL2S4JSSP(args)
-    agent.train()
+    main(args)
