@@ -3,6 +3,7 @@ import gc
 import os
 import random
 import time
+from pathlib import Path
 
 import torch
 import torch.nn.functional as F
@@ -21,42 +22,15 @@ from torchmetrics.classification import (
     BinaryRecall,
 )
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_ROOT_PATH = str(ROOT_DIR / "dataset")
+RESULTS_TMP_PATH = ROOT_DIR / "results" / "tmp"
+
 # Run using:
 # cd /mnt/4tb/rachel_thesis/cross-domain-gin/DDI
 # python3 src/train.py --dataset "biosnapddi" --pretrained_path "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1/checkpoints/best_gin_incumbent.pth" --init_mode "pretrained"
 
-# Profile:
-# python3 -m cProfile -s cumulative src/train.py --dataset "ogbl-ddi" --pretrained_path "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1/checkpoints/best_gin_incumbent.pth" --init_mode "pretrained" --epochs 5 > profile_ogbl.txt
-
-# python3 src/train.py --dataset "ogbl-ddi" --pretrained_path "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1/checkpoints/best_gin_incumbent.pth" --init_mode "pretrained" --epochs 5 --batch_size 10000 --lr 1e-7
-
-# 35 seconds for bs = 5000
-# --- Final epoch
-# Run: 02, Epoch: 05, Loss: 0.0972 || TEST RESULTS: Accuracy: 85.5130, AUC: 99.5320, AP: 99.6003, F1: 85.8453, Recall: 99.6003
-#     Hits@1  Train: 1.11%  Valid: 0.70%  Test: 1.99%
-#     Hits@3  Train: 10.84%  Valid: 8.25%  Test: 2.12%
-#    Hits@10  Train: 25.02%  Valid: 20.22%  Test: 6.85%
-#    Hits@20  Train: 39.52%  Valid: 32.55%  Test: 13.48%
-#    Hits@30  Train: 47.38%  Valid: 39.55%  Test: 19.07%
-#    Hits@40  Train: 53.98%  Valid: 45.61%  Test: 24.41%
-#    Hits@50  Train: 56.74%  Valid: 48.06%  Test: 28.10%
-
-# 149 seconds for bs = 1024
-# ---
-# Run: 02, Epoch: 05, Loss: 0.0834 || TEST RESULTS: Accuracy: 90.2496, AUC: 99.7663, AP: 99.7861, F1: 90.8842, Recall: 99.7861
-#     Hits@1  Train: 0.75%  Valid: 0.32%  Test: 1.13%
-#     Hits@3  Train: 5.59%  Valid: 3.62%  Test: 2.93%
-#    Hits@10  Train: 23.55%  Valid: 17.54%  Test: 10.95%
-#    Hits@20  Train: 46.63%  Valid: 37.41%  Test: 15.49%
-#    Hits@30  Train: 66.16%  Valid: 55.70%  Test: 20.16%
-#    Hits@40  Train: 69.53%  Valid: 58.98%  Test: 24.72%
-#    Hits@50  Train: 72.79%  Valid: 62.38%  Test: 31.96%
-# ---
-# End time: 1774495359.8699143, device = cuda:0
-# Duration: 149.18063068389893, device = cuda:0
-
-# TODO: UPDATE PATH HERE
-DATA_ROOT_PATH = "/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/dataset"
+DATA_ROOT_PATH = str(ROOT_DIR / "dataset")
 
 
 class ModelRunner:
@@ -429,8 +403,6 @@ def main(args):
         pretrained_state=pretrained_state,
     )
 
-    # return
-
     # Create log helper
     log_helper = LogHelper(
         args=args,
@@ -486,13 +458,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--results_dir",
         type=str,
-        default="/mnt/4tb/rachel_thesis/DDI/src/rachel/experiment_results/tmp",
-        # TODO: UPDATE PATH HERE
+        default=str(RESULTS_TMP_PATH),
     )
 
     # RUN SETTINGS
     parser.add_argument("--force_rerun", action="store_true")
-    parser.add_argument("--runs", type=int, default=2)  # TODO: used to be 5
+    parser.add_argument("--runs", type=int, default=2)
     parser.add_argument(
         "--dataset",
         type=str,
@@ -502,7 +473,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--device",
         type=int,
-        default=0,  # TODO: upddated here
+        default=0,
         help="GPU device ID. Use -1 for CPU.",
     )
 

@@ -4,14 +4,9 @@ import torch
 from sklearn.model_selection import train_test_split
 from torch_geometric.data import Data, Dataset
 
-# TODO: UPDATE PATHS HERE (eg path='./dataset')
-DATA_PATH = "/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/dataset"
-
 
 class BioSnapDDIDataset(Dataset):
-    def __init__(
-        self, name="biosnapddi", path=DATA_PATH, transform=None, pre_transform=None
-    ):
+    def __init__(self, path, name="biosnapddi", transform=None, pre_transform=None):
         self.name = name
         self.transform = transform
         self.pre_transform = pre_transform

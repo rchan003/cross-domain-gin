@@ -17,9 +17,10 @@ from src.generateJSP import uni_instance_gen
 
 # For quickly updating log file when this is run
 FLUSH: bool = True
-# TODO: UPDATE PATH HERE
-DATA_PATH = Path("/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/data")
-BASE_RUN_DIR = Path("/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results")
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_PATH = ROOT_DIR / "data"
+RESULTS_DIR = ROOT_DIR / "results"
 
 
 class RunManager:
@@ -163,8 +164,8 @@ class RL2S4JSSP:
         self.incumbent_validation_result = np.inf
         self.current_validation_result = np.inf
 
-        # Create run manager and initialize run directory
-        self.run_manager = RunManager(self.args, base_dir=BASE_RUN_DIR)
+        # Create run manager and initialize results directory
+        self.run_manager = RunManager(self.args, base_dir=RESULTS_DIR)
         self.run_manager.initialize_run_directory()
 
         # Save the batch where the best occured

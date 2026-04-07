@@ -9,10 +9,9 @@ import seaborn as sns
 
 # --- CONFIGURATION ---
 RUN_NAME = "ogbl-ddi"
-# TODO UPDATE PATH HERE
-BASE_PATH = Path("/mnt/4tb/rachel_thesis/DDI/src/rachel")
-RESULTS_DIR = BASE_PATH / "experiment_results" / RUN_NAME
-OUTPUT_DIR = BASE_PATH / "plotting" / f"{RUN_NAME}_master"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+RESULTS_DIR = BASE_DIR / "DDI" / "results" / RUN_NAME
+OUTPUT_DIR = BASE_DIR / "transfer_learning" / "experiment_results" / RUN_NAME
 
 CONFIDENCE_INTERVAL = 95
 METRICS = ["loss", "accuracy", "auc", "ap", "f1", "recall", "test"]
@@ -232,8 +231,11 @@ def main(args):
         (OUTPUT_DIR / sub).mkdir(parents=True, exist_ok=True)
 
     df = load_data(RESULTS_DIR, OUTPUT_DIR / "data", force=args.force)
+    if args.max_epoch is not None:
+        print(f"[INFO] Limiting plots to epochs <= {args.max_epoch}")
+        df = df[df["epoch"] <= args.max_epoch]
 
-    print("\n[SECTION 1/4] Global Aggregate")
+    print("\n[SECTION 1/3] Global Aggregate")
     for m in METRICS:
         if m in df.columns:
             plot_line(
@@ -245,16 +247,16 @@ def main(args):
                 args.force,
             )
 
-    print("\n[SECTION 2/4] Architecture Analysis")
+    print("\n[SECTION 2/3] Architecture Analysis")
     generate_section(
-        df, OUTPUT_DIR / "split_by_architecture", "architecture", args.force
+        df, OUTPUT_DIR / "plots" / "split_by_architecture", "architecture", args.force
     )
 
-    print("\n[SECTION 3/4] Scale Analysis")
-    generate_section(df, OUTPUT_DIR / "split_by_scale", "scale", args.force)
+    print("\n[SECTION 3/3] Scale Analysis")
+    generate_section(df, OUTPUT_DIR / "plots" / "split_by_scale", "scale", args.force)
 
-    print("\n[SECTION 4/4] Batch Size Analysis")
-    generate_section(df, OUTPUT_DIR / "split_by_batch_size", "batch_size", args.force)
+    # print("\n[SECTION 4/4] Batch Size Analysis")
+    # generate_section(df, OUTPUT_DIR / "plots" / "split_by_batch_size", "batch_size", args.force)
 
     print(f"\nPipeline Complete. Outputs: {OUTPUT_DIR}")
 
@@ -263,6 +265,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Thesis Plotting Suite")
     parser.add_argument(
         "--force", action="store_true", help="Overwrite existing plots/cache"
+    )
+    parser.add_argument(
+        "--max-epoch",
+        type=int,
+        default=None,
+        help="Maximum epoch to include in plots",
     )
     args = parser.parse_args()
     main(args)
