@@ -43,16 +43,14 @@ cross-domain-gin/
 
 ## ⚙️ Environment Setup
 
-### Conda Environment For JSSP Project
-
+To create a conda environment for the JSSP project:
 ```bash
 conda create -n jssp_env python=3.8
 conda activate jssp_env
 python -m pip install -r JSSP/requirements.txt
 ```
 
-### Conda Environment For DDI Project
-
+To create a conda environment for the DDI project:
 ```bash
 conda create -n ddi_env python=3.8
 conda activate ddi_env
@@ -68,6 +66,7 @@ First, run the JSSP experiments to create pretrained GIN models. Update the JSSP
 Logs and results will be saved under `JSSP/logs` and `JSSP/results` in subdirectories named after each experiment. The best pretrained model (`best_gin_incumbent.pth`) from each experiment will be used for transfer learning in the DDI experiments.
 
 ```bash
+conda activate jssp_env
 cd JSSP
 python scripts/run_experiments.py
 ```
@@ -79,6 +78,7 @@ Run the transfer learning experiments using the pretrained JSSP in models by fir
 For each pretrained JSSP model (`best_gin_incumbent.pth`) in the `JSSP/results` folder, the code performs multiple training runs under two conditions: random initialization (control) and initialization from pretrained weights. Each paired run uses the same random seed schedule to ensure a fair comparison.
 
 ```bash
+conda activate ddi_env
 cd DDI
 python scripts/run_experiments.py
 ```
@@ -118,3 +118,4 @@ Abbas, K., Hao, C., Yong, X. et al. Graph neural network-based drug-drug interac
 - [ ] Add more comments to code
 - [ ] Add docstrings to functions
 - [ ] Move DDI logs into their experiment results folder instead of having them all in one logs folder
+- [ ] Make conda env for transfer learning or try to unify all of them or make it work with DDI env
