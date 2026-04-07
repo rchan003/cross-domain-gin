@@ -7,8 +7,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+# --- EXPERIMENT TO PLOT ---
+RUN_NAME = "tmp/ogbl-ddi-test"
+
 # --- CONFIGURATION ---
-RUN_NAME = "ogbl-ddi"
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 RESULTS_DIR = BASE_DIR / "DDI" / "results" / RUN_NAME
 OUTPUT_DIR = BASE_DIR / "transfer_learning" / "experiment_results" / RUN_NAME
@@ -24,7 +26,6 @@ class PlotType(Enum):
     SCALE_INDIVIDUAL = auto()
     ARCH_COMBINED = auto()
     ARCH_INDIVIDUAL = auto()
-    # New Batch Size types
     BS_COMBINED = auto()
     BS_INDIVIDUAL = auto()
 
@@ -223,10 +224,10 @@ def main(args):
     # Added "split_by_batch_size" to directory init
     for sub in [
         "data",
-        "global",
-        "split_by_architecture",
-        "split_by_scale",
-        "split_by_batch_size",
+        "plots/global",
+        "plots/split_by_architecture",
+        "plots/split_by_scale",
+        "plots/split_by_batch_size",
     ]:
         (OUTPUT_DIR / sub).mkdir(parents=True, exist_ok=True)
 
@@ -241,7 +242,7 @@ def main(args):
             plot_line(
                 df,
                 m,
-                OUTPUT_DIR / "global",
+                OUTPUT_DIR / "plots" / "global",
                 "initialization",
                 PlotType.GLOBAL,
                 args.force,

@@ -3,11 +3,21 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
-from logger import Logger
+from .logger import Logger
 
 
 class LogHelper:
-    def __init__(self, args, model_name: str, result_dir: str, experiment_name: str, mode_part, model, arch, in_channels):
+    def __init__(
+        self,
+        args,
+        model_name: str,
+        result_dir: str,
+        experiment_name: str,
+        mode_part,
+        model,
+        arch,
+        in_channels,
+    ):
         self.args = args
         self.dataset_name = args.dataset
         self.model_name = model_name
@@ -29,11 +39,11 @@ class LogHelper:
             return
         else:
             self.skip = False
-        
+
         # Exit if not saving results
         if not args.save_results:
             return
-        
+
         # Remove old folder if rerunning
         if os.path.exists(self.log_dir):
             print(f"\n=== Clearing existing experiment folder: {self.log_dir} ===")
@@ -51,22 +61,22 @@ class LogHelper:
         metadata_path = os.path.join(self.log_dir, "metadata.txt")
 
         with open(metadata_path, "w", encoding="utf-8") as f:
-            now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             f.write(f"Run started at: {now}\n\n")
             f.write("=== RUN ARGS ===\n")
             for k, v in sorted(vars(self.args).items()):
                 f.write(f"  {k}: {v}\n")
             f.write("\n")
-            
+
             f.write("=== ARCHITECTURE ===\n")
             if self.arch is not None:
                 for k, v in self.arch.items():
                     f.write(f"{k}: {v}\n")
-            
+
             f.write(f"in_channels: {self.in_channels}\n")
             f.write(f"hidden_channels: {self.args.hidden_channels}\n")
             f.write(f"num_layers: {self.args.num_layers}\n\n")
-            
+
             f.write("=== MODEL STRUCTURE ===\n")
             f.write(str(self.model) + "\n\n")
 
@@ -99,8 +109,10 @@ class LogHelper:
 
         with open(log_file_path, "a") as log_file:
             if not file_exists:
-                log_file.write("run,epoch,loss,accuracy,auc,ap,f1,recall,hits@k,train,valid,test\n")
-            
+                log_file.write(
+                    "run,epoch,loss,accuracy,auc,ap,f1,recall,hits@k,train,valid,test\n"
+                )
+
             # Get overall results first
             acc, auc, ap, f1, recall = results["Overall"]
             print_run_message = (
@@ -141,7 +153,7 @@ class LogHelper:
                 )
                 print(f"{print_hits_message}")
 
-            #log_file.write("---\n")
+            # log_file.write("---\n")
         print("---")
 
     def save_summary(self):
@@ -152,14 +164,16 @@ class LogHelper:
             summary_folder,
             f"{self.dataset_name}_{self.model_name}_results_summary.csv",
         )
-        
+
         isFirst = True
         with open(summary_path, "w") as summary_file:
             for key, logger in self.loggers.items():
-                # Log overall stats only the first time 
+                # Log overall stats only the first time
                 if isFirst:
                     summary_file.write(f"Overall stats:\n")
-                    Logger.print_overall_statistics(overall_results=self.overall_results, file=summary_file)
+                    Logger.print_overall_statistics(
+                        overall_results=self.overall_results, file=summary_file
+                    )
                     summary_file.write("\n---\n")
                     isFirst = False
 
