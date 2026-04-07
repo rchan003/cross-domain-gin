@@ -48,7 +48,7 @@ cross-domain-gin/
 ```bash
 conda create -n jssp_env python=3.8
 conda activate jssp_env
-pip install -r JSSP/requirements.txt
+python -m pip install -r JSSP/requirements.txt
 ```
 
 ### Conda Environment For DDI Project
@@ -56,12 +56,12 @@ pip install -r JSSP/requirements.txt
 ```bash
 conda create -n ddi_env python=3.8
 conda activate ddi_env
-pip install -r DDI/requirements.txt
+python -m pip install -r DDI/requirements.txt
 ```
 
 ## 🚀 Running Experiments
 
-### Create Pretrained GIN Models on JSSP
+### 1. Create Pretrained GIN Models on JSSP
 
 First, run the JSSP experiments to create pretrained GIN models. Update the JSSP experiment settings in `config.py`. Then run the command below to start the experiments. 
 
@@ -72,18 +72,18 @@ cd JSSP
 python scripts/run_experiments.py
 ```
 
-### DDI Training with Transfer Learning
+### 2. DDI Training with Transfer Learning
 
-Run the transfer learning experiments using the pretrained JSSP models by first setting the DDI experiment configuration in `config.py`. Then run the command below to start the experiments. Logs and results will be saved under `DDI/logs` and `DDI/results` in subdirectories named after `DDI_EXPERIMENT_SET_NAME`.
+Run the transfer learning experiments using the pretrained JSSP in models by first setting the DDI experiment configuration in `config.py`. Then run the command below to start the experiments. Logs and results will be saved under `DDI/logs` and `DDI/results` in subdirectories named after `DDI_EXPERIMENT_SET_NAME`.
 
-For each pretrained JSSP model (`best_gin_incumbent.pth`), the code performs multiple training runs under two conditions: random initialization (control) and initialization from pretrained weights. Each paired run uses the same random seed schedule to ensure a fair comparison.
+For each pretrained JSSP model (`best_gin_incumbent.pth`) in the `JSSP/results` folder, the code performs multiple training runs under two conditions: random initialization (control) and initialization from pretrained weights. Each paired run uses the same random seed schedule to ensure a fair comparison.
 
 ```bash
 cd DDI
 python scripts/run_experiments.py
 ```
 
-## 📊 Analyzing Results
+### 3. Analyzing Results
 
 After DDI experiments finish, use the scripts under `transfer_learning/scripts/` to aggregate CSV logs, compare random versus pretrained initialization, and produce figures and statistical summaries. Run **`plot_results.py` first**: it scans `DDI/results/<experiment-set>/` (where `<experiment-set>` matches `DDI_EXPERIMENT_SET_NAME` in `config.py`), builds a cached `raw_data.csv`, and writes plots under `transfer_learning/experiment_results/<experiment-set>/`. Then run **`analyze_results.py`** on the same experiment set: it reads `transfer_learning/experiment_results/<experiment-set>/data/raw_data.csv` and writes reports under `transfer_learning/experiment_results/<experiment-set>/stats/`.
 
