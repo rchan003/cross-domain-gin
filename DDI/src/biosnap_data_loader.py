@@ -90,7 +90,7 @@ class BioSnapDDIDataset(Dataset):
 
         return g, node_graphs
 
-    def get_edge_split(self):
+    def get_edge_split(self, seed=42):
         # Convert PyTorch Geometric data to DGL graphs
         train_g = self.to_dgl_graph(self.train_data)
         test_g = self.to_dgl_graph(self.test_data)
@@ -107,10 +107,10 @@ class BioSnapDDIDataset(Dataset):
 
         # Randomly sample 20% of the positive and negative edges for validation
         train_pos_edges, valid_pos_edges = train_test_split(
-            train_pos_edges.numpy(), test_size=0.2, random_state=42
+            train_pos_edges.numpy(), test_size=0.2, random_state=seed
         )
         train_neg_edges, valid_neg_edges = train_test_split(
-            train_neg_edges.numpy(), test_size=0.2, random_state=42
+            train_neg_edges.numpy(), test_size=0.2, random_state=seed
         )
 
         # Convert back to torch tensors

@@ -2,12 +2,17 @@ import argparse
 import gc
 import os
 import random
+import sys
 import time
 from pathlib import Path
 
 import torch
 import torch.nn.functional as F
 from dgl.dataloading.negative_sampler import GlobalUniform
+
+# Access DDI codebase for shared utilities and model components
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from src.dataset_helper import DatasetHelper
 from src.log_helper import LogHelper
 from src.models import DGLGraphModel, LinkPredictor
@@ -317,6 +322,12 @@ def create_model_and_predictor(device, args, graph):
         pretrained_state = None
         model_hidden_channels = args.hidden_channels
         model_num_layers = args.num_layers
+        arch = {
+            "num_layers": args.num_layers,
+            "hidden_dim": args.hidden_channels,
+            "pretrained_input_dim": in_channels,
+            "has_batchnorm": False,
+        }
 
     model = DGLGraphModel(
         input_features=in_channels,
@@ -369,20 +380,14 @@ def main(args):
 
     start_time = time.time()
     print(f"Start time: {start_time}, device = {device}")
-
     print(f"\n=== Using device: {device} ===")
-
     print(f"\n=== Processing dataset: {args.dataset} ===")
-    # Create dataset helper
+
     dataset_helper = DatasetHelper(
         args=args, device=device, data_root_path=DATA_ROOT_PATH
     )
 
-    # Get dataset graph and evaluator
     dataset, graph, evaluator = dataset_helper.load_dataset()
-
-    # Split dataset for train test and validation
-    split_edge = dataset_helper.get_train_test_val_edge_split(dataset)
 
     print(f"\n=== Running GIN model on {args.dataset} ===")
     model, predictor, pretrained_state, arch, in_channels = create_model_and_predictor(
@@ -391,19 +396,6 @@ def main(args):
 
     experiment_name, mode_part = build_experiment_name(args, arch, in_channels)
 
-    # Create model runner
-    model_runner = ModelRunner(
-        args=args,
-        model=model,
-        predictor=predictor,
-        evaluator=evaluator,
-        graph=graph,
-        split_edge=split_edge,
-        device=device,
-        pretrained_state=pretrained_state,
-    )
-
-    # Create log helper
     log_helper = LogHelper(
         args=args,
         model_name="GIN",
@@ -415,13 +407,33 @@ def main(args):
         in_channels=in_channels,
     )
 
-    # Don't run experiment if already completed before
     if log_helper.skip:
         return
 
     for run in range(args.runs):
-        random_seed = random.randint(1, 2**6 - 1)
-        seed_torch(random_seed)
+        run_split_seed = args.split_seed + run
+        run_model_seed = args.model_seed + run
+        print(
+            f"\n=== Starting run {run+1}/{args.runs} with split_seed={run_split_seed} and model_seed={run_model_seed} ==="
+        )
+
+        seed_torch(run_model_seed)
+
+        split_edge = dataset_helper.get_train_test_val_edge_split(
+            dataset,
+            seed=run_split_seed,
+        )
+
+        model_runner = ModelRunner(
+            args=args,
+            model=model,
+            predictor=predictor,
+            evaluator=evaluator,
+            graph=graph,
+            split_edge=split_edge,
+            device=device,
+            pretrained_state=pretrained_state,
+        )
 
         model_runner.reset_and_initialize_runner()
 
@@ -432,10 +444,12 @@ def main(args):
                 results = model_runner.test()
                 if args.save_results:
                     log_helper.log_results(
-                        results=results, run=run, epoch=epoch, loss=loss
+                        results=results,
+                        run=run,
+                        epoch=epoch,
+                        loss=loss,
                     )
 
-        # Clear GPU memory after each run to prevent potential OOM issues in subsequent runs
         torch.cuda.empty_cache()
         gc.collect()
 
@@ -503,6 +517,10 @@ if __name__ == "__main__":
 
     # TEST SETTINGS
     parser.add_argument("--eval_steps", type=int, default=1)
+
+    # SEEDS
+    parser.add_argument("--split_seed", type=int, default=42)
+    parser.add_argument("--model_seed", type=int, default=42)
 
     args = parser.parse_args()
     main(args)

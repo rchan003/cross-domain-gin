@@ -3,20 +3,15 @@ import math
 import subprocess
 import sys
 import time
-from argparse import Namespace
 from datetime import timedelta
 from pathlib import Path
 from typing import List
 
-# TODO: make some learning rate schedule and hyperparameter tuning thing then run exerpiments with best settings
-
 # cd /mnt/4tb/rachel_thesis/cross-domain-gin/DDI
-# RUN COMMAND:  nohup python3 -u src/run_experiments.py > runner.log 2>&1 &
+# RUN COMMAND:  nohup python3 -u scripts/run_experiments.py > runner.log 2>&1 &
 # KILL PROCESS: kill <PID>
 # GET PID:      ps aux | grep run_experiments.py
 # Get nvidia processes: nvidia-smi
-
-# Current pid: 2044683 (CHECK BEFORE KILLING!!!)
 
 # Project directories
 DDI_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +22,8 @@ EXPERIMENT_SCRIPT = DDI_DIR / "scripts" / "train.py"
 SAVED_MODEL_DIR = JSSP_DIR / "results"
 
 # Results paths
-LOG_DIR = DDI_DIR / "logs" / "tmp"
-RESULTS_DIR = DDI_DIR / "results" / "tmp"
+LOG_DIR = DDI_DIR / "logs"
+RESULTS_DIR = DDI_DIR / "results"
 
 
 def build_command(config: dict) -> List[str]:
@@ -36,7 +31,6 @@ def build_command(config: dict) -> List[str]:
 
     for key, value in config.items():
         cmd.append(f"--{key}")
-
         if isinstance(value, bool):
             cmd.append(str(value).lower())
         else:
@@ -46,7 +40,6 @@ def build_command(config: dict) -> List[str]:
 
 
 def build_run_name(config: dict) -> str:
-    # 1. Map long keys to short identifiers
     key_map = {
         "init_mode": "init",
         "dataset": "ds",
@@ -56,16 +49,18 @@ def build_run_name(config: dict) -> str:
         "lr": "lr",
         "num_neg_per_pos": "neg",
         "pretrained_path": "pre",
+        "split_seed": "split",
+        "model_seed": "seed",
     }
 
-    # 2. Define what is actually important to see in the filename
-    # (Exclude things like device, eval_steps, or runs)
     important_keys = [
         "init_mode",
         "loss_function",
         "lr",
         "batch_size",
         "pretrained_path",
+        "split_seed",
+        "model_seed",
     ]
 
     parts = []
@@ -76,28 +71,23 @@ def build_run_name(config: dict) -> str:
         v = config[k]
         short_k = key_map.get(k, k)
 
-        # Handle the pretrained path string specifically
         if k == "pretrained_path" and v is not None:
-            # Gets just the specific experiment folder name
             v = Path(v).parents[1].name
-            # If the folder name itself is too long, take the last 30 chars
             if len(v) > 30:
                 v = "..." + v[-27:]
 
-        # Shorten loss function names
         if v == "binary_cross_entropy":
             v = "bce"
-        if v == "pairwise_ranking":
+        elif v == "pairwise_ranking":
             v = "rank"
 
         parts.append(f"{short_k}={v}")
 
-    # 3. Add a timestamp at the front so files sort chronologically
     timestamp = time.strftime("%m%d_%H%M")
     return f"{timestamp}__{'__'.join(parts)}"
 
 
-def run_experiment(log_path, run_name: str, config: dict) -> int:
+def run_experiment(log_path: Path, run_name: str, config: dict) -> int:
     cmd = build_command(config)
 
     print(f"Running experiment: {run_name}")
@@ -111,45 +101,40 @@ def run_experiment(log_path, run_name: str, config: dict) -> int:
 
 
 def get_saved_models():
-    paths = [
+    return [
         p.resolve()
         for p in Path(SAVED_MODEL_DIR).glob("*/checkpoints/best_gin_incumbent.pth")
     ]
-    return paths
 
 
 def main():
-    # Name of this set of this experiments
-    experiment_set_name: str = "ogbl-ddi"  # NOTE: Update this
-    save_results: bool = True  # NOTE: Update this
+    experiment_set_name = "ogbl-ddi-random-sampling"  # NOTE: update this
+    save_results = True
 
-    # Update output paths
     exp_log_dir = LOG_DIR / experiment_set_name
     exp_results_dir = RESULTS_DIR / experiment_set_name
+    exp_log_dir.mkdir(parents=True, exist_ok=True)
 
-    # Get all the model checkpoints
-    saved_models_list = get_saved_models()[:1]  # TODO: remove
+    saved_models_list = get_saved_models()  # [:1]  # TODO: remove [:1]
 
-    # Put the parameters you want to vary here
+    # Define search space
     search_space = {
         "init_mode": ["pretrained", "random"],
-        # "batch_size": [10000],
     }
 
-    # Optional fixed parameters for every run
-    # TODO: change dataset and loss function
+    # Fixed parameters for every run
     fixed_params = {
-        "dataset": "ogbl-ddi",
+        "dataset": "ogbl-ddi",  # NOTE: update this
         "loss_function": "binary_cross_entropy",
-        "runs": 2,
+        "runs": 20,
         "device": 0,
         "batch_size": 18000,
-        "epochs": 30,
+        "epochs": 25,
         "eval_steps": 1,
-        "lr": 1e-6,  # TODO: try to tune lr
+        "lr": 1e-6,
         "dropout": 0.1,
         "num_neg_per_pos": 1,
-        "results_dir": exp_results_dir,
+        "results_dir": str(exp_results_dir),
         "save_results": save_results,
     }
 
@@ -167,11 +152,20 @@ def main():
     )
     start_time = time.time()
 
-    # To store runner logs
-    exp_log_dir.mkdir(parents=True, exist_ok=True)
+    print(f"Dataset: {fixed_params['dataset']}")
+    print(f"Saved models: {len(saved_models_list)}")
+    print(f"Runs per experiment: {fixed_params['runs']}")
+    print(f"Total experiments: {num_experiments}")
 
-    # Run Experiments
-    for saved_model in saved_models_list:
+    # Seed scheduling
+    base_split_seed = 10_000
+    base_model_seed = 100_000
+
+    for model_idx, saved_model in enumerate(saved_models_list):
+        # One paired seed schedule per saved model
+        split_seed = base_split_seed + model_idx * 1000
+        model_seed = base_model_seed + model_idx * 1000
+
         for values in values_product:
             global_idx += 1
             print(f"\nEXPERIMENT {global_idx} OF {num_experiments}")
@@ -181,16 +175,19 @@ def main():
             config.update(dict(zip(keys, values)))
             config.update({"pretrained_path": str(saved_model)})
 
-            # Parse arguments and create run name
-            args = Namespace(**config)
-            run_name = build_run_name(config)
+            # Same split schedule for pretrained/random on the same saved model
+            config["split_seed"] = split_seed
+            config["model_seed"] = model_seed
 
-            # Create the runner log file
+            # Create run name and log path
+            run_name = build_run_name(config)
             log_path = exp_log_dir / f"{run_name}.log"
 
             # Run the Experiment
             return_code = run_experiment(
-                log_path=log_path, run_name=run_name, config=config
+                log_path=log_path,
+                run_name=run_name,
+                config=config,
             )
             results.append((config, return_code))
 
@@ -199,21 +196,21 @@ def main():
                 "SUCCESS" if return_code == 0 else f"FAILED (code={return_code})"
             )
 
-            # Calculate ETA
-            t2 = time.time()
-            avg_experiment_time = (t2 - start_time) / (global_idx)
+            elapsed = time.time() - start_time
+            avg_experiment_time = elapsed / global_idx
             eta = timedelta(
-                seconds=int((num_experiments - (global_idx)) * avg_experiment_time)
-            )
-            print(
-                f"Finished Experiment {global_idx} | Status: {experiment_status} | ETA: {eta}"
+                seconds=int((num_experiments - global_idx) * avg_experiment_time)
             )
 
-    # Output result of all experiments
+            print(
+                f"Finished Experiment {global_idx} | "
+                f"Status: {experiment_status} | ETA: {eta}"
+            )
+
     print("\nAll experiments finished.\n")
-    end_time = time.time()
-    total_time = timedelta(seconds=int(start_time - end_time))
+    total_time = timedelta(seconds=int(time.time() - start_time))
     print(f"Total Time: {total_time}")
+
     for config, code in results:
         status = "SUCCESS" if code == 0 else f"FAILED (code={code})"
         print(f"{status}: {config}")
