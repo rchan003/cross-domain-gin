@@ -9,19 +9,19 @@ from pathlib import Path
 
 from train import RunManager
 
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from config import JSSP_FIXED_PARAMS, JSSP_SEARCH_SPACE
+
 # RUN COMMAND:  nohup python3 -u train.py > runner.log 2>&1 &
 # KILL PROCESS: kill <PID>
 # GET PID:      ps aux | grep train.py
 
 # Current pid: 1794318 (CHECK BEFORE KILLING!!!)
 
-# Experiment Parameters
-BATCH_SIZE = 64
-NUM_EPOCHS = 1
-NUM_EPISODES = BATCH_SIZE * NUM_EPOCHS
-
-# Name of training file
-# relative root directory
+# Relative paths to relevant directories
 JSSP_DIR = Path(__file__).resolve().parent.parent
 TRAIN_SCRIPT = JSSP_DIR / "scripts" / "train.py"
 LOG_DIR = JSSP_DIR / "logs"
@@ -59,34 +59,8 @@ def run_experiment(run_name: str, config: dict) -> int:
 
 
 def main():
-    # Put the parameters you want to vary here
-    search_space = {
-        "embedding_type": ["gin"],  # , "gin+dghan"],
-        "hidden_dim": [128],  # , 256],
-        "lr": [1e-4],
-        "embedding_layer": [3],  # , 4],
-        "j": [10],  # , 15, 20],
-        "m": [10],  # , 15],
-    }
-
-    # Optional fixed parameters for every run
-    fixed_params = {
-        # "j": 10,
-        # "m": 10,
-        "l": 1,  # Lower bound: Minimum processing time
-        "h": 99,  # Upper bound: Maximum processing time
-        "init_type": "fdd-divide-mwkr",
-        "reward_type": "yaoxin",
-        "gamma": 1.0,
-        "policy_layer": 4,
-        "heads": 1,  # Num of attention heads in GAT
-        "drop_out": 0.0,
-        "steps_learn": 10,  # Num environment steps before policy update
-        "transit": 500,  # Maximum environment steps per episode
-        "batch_size": BATCH_SIZE,  # Number JSSP instances solved in parallel
-        "episodes": NUM_EPISODES,  # Number of episodes (epochs = episodes // batch_size)
-        "step_validation": 1,  # Number of batches to complete before validating
-    }
+    search_space = JSSP_SEARCH_SPACE
+    fixed_params = JSSP_FIXED_PARAMS
 
     # Create search space
     keys = list(search_space.keys())

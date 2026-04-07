@@ -7,6 +7,12 @@ from datetime import timedelta
 from pathlib import Path
 from typing import List
 
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from config import DDI_EXPERIMENT_SET_NAME, DDI_FIXED_PARAMS, DDI_SEARCH_SPACE
+
 # cd /mnt/4tb/rachel_thesis/cross-domain-gin/DDI
 # RUN COMMAND:  nohup python3 -u scripts/run_experiments.py > runner.log 2>&1 &
 # KILL PROCESS: kill <PID>
@@ -21,7 +27,7 @@ JSSP_DIR = Path(__file__).resolve().parent.parent.parent / "JSSP"
 EXPERIMENT_SCRIPT = DDI_DIR / "scripts" / "train.py"
 SAVED_MODEL_DIR = JSSP_DIR / "results"
 
-# Results paths
+# Output paths
 LOG_DIR = DDI_DIR / "logs"
 RESULTS_DIR = DDI_DIR / "results"
 
@@ -108,8 +114,7 @@ def get_saved_models():
 
 
 def main():
-    experiment_set_name = "ogbl-ddi-random-sampling"  # NOTE: update this
-    save_results = True
+    experiment_set_name = DDI_EXPERIMENT_SET_NAME
 
     exp_log_dir = LOG_DIR / experiment_set_name
     exp_results_dir = RESULTS_DIR / experiment_set_name
@@ -117,26 +122,9 @@ def main():
 
     saved_models_list = get_saved_models()  # [:1]  # TODO: remove [:1]
 
-    # Define search space
-    search_space = {
-        "init_mode": ["pretrained", "random"],
-    }
-
-    # Fixed parameters for every run
-    fixed_params = {
-        "dataset": "ogbl-ddi",  # NOTE: update this
-        "loss_function": "binary_cross_entropy",
-        "runs": 20,
-        "device": 0,
-        "batch_size": 18000,
-        "epochs": 25,
-        "eval_steps": 1,
-        "lr": 1e-6,
-        "dropout": 0.1,
-        "num_neg_per_pos": 1,
-        "results_dir": str(exp_results_dir),
-        "save_results": save_results,
-    }
+    search_space = DDI_SEARCH_SPACE
+    fixed_params = DDI_FIXED_PARAMS.copy()
+    fixed_params["results_dir"] = str(exp_results_dir)
 
     # Create search space
     keys = list(search_space.keys())
