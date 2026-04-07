@@ -348,5 +348,4 @@ class Actor(nn.Module):
         )  # log_prob using Pytorch API, this will have a gradient shift, reference: https://github.com/pytorch/pytorch/issues/61727. Used in paper submission version.
         # log_prob = torch.log(torch.gather(pi, -1, actions_id.unsqueeze(-1)) + -1e-7).squeeze(-1)  # log_prob calculated manually, this will not have a gradient shift. Switch to this after paper submission.
         return sampled_actions, log_prob
-        return sampled_actions, log_prob
-        return sampled_actions, log_prob
+
