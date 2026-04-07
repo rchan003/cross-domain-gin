@@ -28,7 +28,10 @@ cross-domain-gin/
 │   ├── logs/                   # Logs from JSSP experiments
 │   └── results/                # Results from JSSP experiments
 ├── transfer_learning/          # Code for analyzing transfer learning results
-│   └── scripts/                # Scripts for analyzing results
+│   ├── scripts/                # Scripts for plotting, analysis, and model visualization
+│   ├── experiment_results/     # Aggregated transfer-learning plots/statistics outputs
+│   └── model_diagrams/         # Saved architecture diagrams (e.g., JSSP actor variants)
+├── config.py                   # Central experiment config for JSSP/DDI run_experiments
 ```
 
 ## 📦 Requirements
@@ -40,15 +43,7 @@ cross-domain-gin/
 
 ## ⚙️ Environment Setup
 
-### Conda Environment For DDI Experiments
-
-```bash
-conda create -n ddi_env python=3.8
-conda activate ddi_env
-pip install -r DDI/requirements.txt
-```
-
-### Conda Environment For JSSP Experiments
+### Conda Environment For JSSP Project
 
 ```bash
 conda create -n jssp_env python=3.8
@@ -56,38 +51,48 @@ conda activate jssp_env
 pip install -r JSSP/requirements.txt
 ```
 
+### Conda Environment For DDI Project
+
+```bash
+conda create -n ddi_env python=3.8
+conda activate ddi_env
+pip install -r DDI/requirements.txt
+```
+
 ## 🚀 Running Experiments
 
 ### Create Pretrained GIN Models on JSSP
 
-First, run the JSSP experiments to create pretrained GIN models. Update the experiment, search, and fixed parameters in JSSP/scripts/run_experiments.py as needed. Then run the command below to start the experiments. Logs and results will be saved under JSSP/logs and JSSP/results in subdirectories named after each experiment. The best pretrained model (best_incumbent_gin.pth) from each experiment will be used for transfer learning in the DDI experiments.
+First, run the JSSP experiments to create pretrained GIN models. Update the JSSP experiment settings in `config.py`. Then run the command below to start the experiments. 
+
+Logs and results will be saved under `JSSP/logs` and `JSSP/results` in subdirectories named after each experiment. The best pretrained model (`best_gin_incumbent.pth`) from each experiment will be used for transfer learning in the DDI experiments.
 
 ```bash
 cd JSSP
-python3 scripts/run_experiments.py
+python scripts/run_experiments.py
 ```
 
 ### DDI Training with Transfer Learning
 
-Run the transfer learning experiments using the pretrained JSSP models by first setting experiment_set_name in DDI/scripts/run_experiments.py to the desired experiment (for example, ogbl-ddi-random-sampling) and updating the search and fixed parameters as needed. Then run the command below to start the experiments. Logs and results will be saved under DDI/logs and DDI/results in subdirectories named after experiment_set_name.
+Run the transfer learning experiments using the pretrained JSSP models by first setting the DDI experiment configuration in `config.py`. Then run the command below to start the experiments. Logs and results will be saved under `DDI/logs` and `DDI/results` in subdirectories named after `DDI_EXPERIMENT_SET_NAME`.
 
-For each pretrained JSSP model (best_incumbent_gin.pth), the code performs multiple training runs under two conditions: random initialization (control) and initialization from the pretrained weights. Each paired run uses the same random seed to ensure a fair comparison.
+For each pretrained JSSP model (`best_gin_incumbent.pth`), the code performs multiple training runs under two conditions: random initialization (control) and initialization from pretrained weights. Each paired run uses the same random seed schedule to ensure a fair comparison.
 
 ```bash
 cd DDI
-python3 scripts/run_experiments.py
+python scripts/run_experiments.py
 ```
 
 ## 📊 Analyzing Results
 
-After running the experiments, you can analyze the results using the provided script in the transfer_learning folder. This script will aggregate results from the DDI experiments, compare performance between random initialization and pretrained initialization, and generate plots to visualize the transfer learning performance.
+After DDI experiments finish, use the scripts under `transfer_learning/scripts/` to aggregate CSV logs, compare random versus pretrained initialization, and produce figures and statistical summaries. Run **`plot_results.py` first**: it scans `DDI/results/<experiment-set>/` (where `<experiment-set>` matches `DDI_EXPERIMENT_SET_NAME` in `config.py`), builds a cached `raw_data.csv`, and writes plots under `transfer_learning/experiment_results/<experiment-set>/`. Then run **`analyze_results.py`** on the same experiment set: it reads `transfer_learning/experiment_results/<experiment-set>/data/raw_data.csv` and writes reports under `transfer_learning/experiment_results/<experiment-set>/stats/`.
 
-Update the script to specify which experiments to analyze and any other parameters as needed. Then run the command below to analyze the results. Plots and analysis outputs will be saved under transfer_learning/results in subdirectories named after the experiment set being analyzed.
+Both scripts take a **required** `--run-name` that must be the same string as your DDI experiment set folder name (for example, the value of `DDI_EXPERIMENT_SET_NAME`). Optional flags control metrics, confidence intervals, plot styling, epoch limits, and (for analysis) p-value and effect-size thresholds. Use `--help` on each script for the full argument list.
 
 ```bash
 cd transfer_learning
-python3 scripts/plot_results.py
-python3 scripts/analyze_results.py
+python scripts/plot_results.py --run-name <experiment-set>
+python scripts/analyze_results.py --run-name <experiment-set>
 ```
 
 ## 📚 Citations
@@ -108,11 +113,8 @@ The code in the DDI folder is based on the work of [Abbas et al.] in their paper
 Abbas, K., Hao, C., Yong, X. et al. Graph neural network-based drug-drug interaction prediction. Sci Rep 15, 30340 (2025). https://doi.org/10.1038/s41598-025-12936-1
 ```
 
-## TODO
+## 📝 TODO
 
-- [ ] Add config files for experiments
-- [ ] Add parse args to scripts
 - [ ] Add more comments to code
 - [ ] Add docstrings to functions
-- [ ] Add more README documentation for how to run experiments and analyze results
 - [ ] Move DDI logs into their experiment results folder instead of having them all in one logs folder
