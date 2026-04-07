@@ -10,8 +10,6 @@ from typing import List
 
 # TODO: make some learning rate schedule and hyperparameter tuning thing then run exerpiments with best settings
 
-# python3 src/train.py --dataset "ogbl-ddi" --pretrained_path "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results/10x10[1,99]_fdd-divide-mwkr_yaoxin_1.0_128_3_4_gin_NAN_0.0001_10_500_64_640_1/checkpoints/best_gin_incumbent.pth" --init_mode "pretrained" --epochs 100 --batch_size 18000 --lr 1e-6
-
 # cd /mnt/4tb/rachel_thesis/cross-domain-gin/DDI
 # RUN COMMAND:  nohup python3 -u src/run_experiments.py > runner.log 2>&1 &
 # KILL PROCESS: kill <PID>
@@ -20,18 +18,21 @@ from typing import List
 
 # Current pid: 2044683 (CHECK BEFORE KILLING!!!)
 
-# Name of training file
-# TODO UPDATE PATHS HERE
-EXPERIMENT_SCRIPT = "/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/scripts/train.py"
-SAVED_MODEL_DIR = "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/results"
+# Project directories
+DDI_DIR = Path(__file__).resolve().parent.parent
+JSSP_DIR = Path(__file__).resolve().parent.parent.parent / "JSSP"
 
-# Root directories for results
-LOG_ROOT_DIR = Path("/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/logs")
-RESULTS_ROOT_DIR = Path("/mnt/4tb/rachel_thesis/cross-domain-gin/DDI/results")
+# Input paths
+EXPERIMENT_SCRIPT = DDI_DIR / "scripts" / "train.py"
+SAVED_MODEL_DIR = JSSP_DIR / "results"
+
+# Results paths
+LOG_DIR = DDI_DIR / "logs" / "tmp"
+RESULTS_DIR = DDI_DIR / "results" / "tmp"
 
 
 def build_command(config: dict) -> List[str]:
-    cmd = [sys.executable, "-u", EXPERIMENT_SCRIPT]
+    cmd = [sys.executable, "-u", str(EXPERIMENT_SCRIPT)]
 
     for key, value in config.items():
         cmd.append(f"--{key}")
@@ -123,11 +124,11 @@ def main():
     save_results: bool = True  # NOTE: Update this
 
     # Update output paths
-    log_dir = LOG_ROOT_DIR / experiment_set_name
-    results_dir = RESULTS_ROOT_DIR / experiment_set_name
+    exp_log_dir = LOG_DIR / experiment_set_name
+    exp_results_dir = RESULTS_DIR / experiment_set_name
 
     # Get all the model checkpoints
-    saved_models_list = get_saved_models()
+    saved_models_list = get_saved_models()[:1]  # TODO: remove
 
     # Put the parameters you want to vary here
     search_space = {
@@ -140,15 +141,15 @@ def main():
     fixed_params = {
         "dataset": "ogbl-ddi",
         "loss_function": "binary_cross_entropy",
-        "runs": 20,
+        "runs": 2,
         "device": 0,
         "batch_size": 18000,
-        "epochs": 100,
+        "epochs": 30,
         "eval_steps": 1,
         "lr": 1e-6,  # TODO: try to tune lr
         "dropout": 0.1,
         "num_neg_per_pos": 1,
-        "results_dir": results_dir,
+        "results_dir": exp_results_dir,
         "save_results": save_results,
     }
 
@@ -167,7 +168,7 @@ def main():
     start_time = time.time()
 
     # To store runner logs
-    log_dir.mkdir(parents=True, exist_ok=True)
+    exp_log_dir.mkdir(parents=True, exist_ok=True)
 
     # Run Experiments
     for saved_model in saved_models_list:
@@ -185,7 +186,7 @@ def main():
             run_name = build_run_name(config)
 
             # Create the runner log file
-            log_path = log_dir / f"{run_name}.log"
+            log_path = exp_log_dir / f"{run_name}.log"
 
             # Run the Experiment
             return_code = run_experiment(

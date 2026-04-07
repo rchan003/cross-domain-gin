@@ -7,7 +7,7 @@ from argparse import Namespace
 from datetime import timedelta
 from pathlib import Path
 
-from train import BASE_RUN_DIR, RunManager
+from train import RunManager
 
 # RUN COMMAND:  nohup python3 -u train.py > runner.log 2>&1 &
 # KILL PROCESS: kill <PID>
@@ -21,9 +21,11 @@ NUM_EPOCHS = 1
 NUM_EPISODES = BATCH_SIZE * NUM_EPOCHS
 
 # Name of training file
-# TODO: UPDATE PATHS HERE
-TRAIN_SCRIPT = "/mnt/4tb/rachel_thesis/cross-domain-gin/JSSP/scripts/train.py"
-LOG_DIR = Path(f"logs")
+# relative root directory
+JSSP_DIR = Path(__file__).resolve().parent.parent
+TRAIN_SCRIPT = JSSP_DIR / "scripts" / "train.py"
+LOG_DIR = JSSP_DIR / "logs"
+RESULTS_DIR = JSSP_DIR / "results"
 
 
 def build_command(config: dict) -> list[str]:
@@ -107,7 +109,7 @@ def main():
 
         # Create run manager to check if this is finished
         args = Namespace(**config)
-        run_manager = RunManager(args, base_dir=BASE_RUN_DIR)
+        run_manager = RunManager(args, base_dir=RESULTS_DIR)
         run_name = run_manager.run_name()
 
         # Skip if this experiment has already been done
