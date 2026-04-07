@@ -8,7 +8,7 @@ import pandas as pd
 import seaborn as sns
 
 # --- EXPERIMENT TO PLOT ---
-RUN_NAME = "tmp/ogbl-ddi-test"
+RUN_NAME = "ogbl-ddi-random-sampling"
 
 # --- CONFIGURATION ---
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -26,21 +26,16 @@ class PlotType(Enum):
     SCALE_INDIVIDUAL = auto()
     ARCH_COMBINED = auto()
     ARCH_INDIVIDUAL = auto()
-    BS_COMBINED = auto()
-    BS_INDIVIDUAL = auto()
 
 
 def parse_details(folder_name):
-    """Extracts Architecture, Scale, and Batch Size from directory names."""
+    """Extracts Architecture and Scale from directory names."""
     arch = re.search(r"(L\d+).*(H\d+)", folder_name)
     scale = re.search(r"(\d+x\d+)", folder_name)
-    # Extracts digits immediately following '_bs'
-    bs = re.search(r"_bs(\d+)", folder_name)
 
     return (
         f"{arch.group(1)}_{arch.group(2)}" if arch else "Unknown",
         scale.group(1) if scale else "Unknown_Scale",
-        bs.group(1) if bs else "Unknown_BS",
     )
 
 
@@ -61,8 +56,7 @@ def load_data(root_dir, data_dir, force=False):
     print(f"[SCAN] Processing results from: {root_dir}")
     all_results = []
     for exp_dir in filter(Path.is_dir, root_dir.iterdir()):
-        # UPDATED: Now unpacks 3 values
-        arch, scale, bs = parse_details(exp_dir.name)
+        arch, scale = parse_details(exp_dir.name)
         for variant in ["control", "pretrained"]:
             target_dir = find_finished_subdir(exp_dir, variant)
             if not target_dir:
@@ -74,7 +68,6 @@ def load_data(root_dir, data_dir, force=False):
                 )
                 df["architecture"] = arch
                 df["scale"] = scale
-                df["batch_size"] = bs  # Added to dataframe
                 all_results.append(df)
 
     if not all_results:
@@ -87,9 +80,7 @@ def load_data(root_dir, data_dir, force=False):
         )
         full_df = full_df[full_df["hits@k"] > 0]
 
-    full_df = full_df.sort_values(
-        by=["architecture", "scale", "batch_size"], ascending=True
-    )
+    full_df = full_df.sort_values(by=["architecture", "scale"], ascending=True)
     full_df.to_csv(cache_path, index=False)
     return full_df
 
@@ -102,7 +93,6 @@ def format_plot_data(df, metric, split_col, plot_type):
     is_combined = plot_type in [
         PlotType.SCALE_COMBINED,
         PlotType.ARCH_COMBINED,
-        PlotType.BS_COMBINED,
     ]
 
     if is_hits:
@@ -139,11 +129,6 @@ def get_title(metric_label, plot_type, group):
         return f"{metric_label} Across Architectures ({CONFIDENCE_INTERVAL}% CI)"
     if plot_type == PlotType.ARCH_INDIVIDUAL:
         return f"{metric_label} for Architecture: {group} ({CONFIDENCE_INTERVAL}% CI)"
-    # New Titles
-    if plot_type == PlotType.BS_COMBINED:
-        return f"{metric_label} Across Batch Sizes ({CONFIDENCE_INTERVAL}% CI)"
-    if plot_type == PlotType.BS_INDIVIDUAL:
-        return f"{metric_label} for Batch Size: {group} ({CONFIDENCE_INTERVAL}% CI)"
 
     return f"{metric_label} Plot"
 
@@ -195,7 +180,6 @@ def generate_section(df, base_path, split_col, force=False):
     type_map = {
         "scale": (PlotType.SCALE_COMBINED, PlotType.SCALE_INDIVIDUAL),
         "architecture": (PlotType.ARCH_COMBINED, PlotType.ARCH_INDIVIDUAL),
-        "batch_size": (PlotType.BS_COMBINED, PlotType.BS_INDIVIDUAL),
     }
     comb_type, ind_type = type_map[split_col]
 
@@ -221,13 +205,11 @@ def generate_section(df, base_path, split_col, force=False):
 
 
 def main(args):
-    # Added "split_by_batch_size" to directory init
     for sub in [
         "data",
         "plots/global",
         "plots/split_by_architecture",
         "plots/split_by_scale",
-        "plots/split_by_batch_size",
     ]:
         (OUTPUT_DIR / sub).mkdir(parents=True, exist_ok=True)
 
@@ -255,9 +237,6 @@ def main(args):
 
     print("\n[SECTION 3/3] Scale Analysis")
     generate_section(df, OUTPUT_DIR / "plots" / "split_by_scale", "scale", args.force)
-
-    # print("\n[SECTION 4/4] Batch Size Analysis")
-    # generate_section(df, OUTPUT_DIR / "plots" / "split_by_batch_size", "batch_size", args.force)
 
     print(f"\nPipeline Complete. Outputs: {OUTPUT_DIR}")
 
