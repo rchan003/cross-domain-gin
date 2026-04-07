@@ -7,17 +7,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-# --- EXPERIMENT TO PLOT ---
-RUN_NAME = "ogbl-ddi-random-sampling"
-
-# --- CONFIGURATION ---
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-RESULTS_DIR = BASE_DIR / "DDI" / "results" / RUN_NAME
-OUTPUT_DIR = BASE_DIR / "transfer_learning" / "experiment_results" / RUN_NAME
-
-CONFIDENCE_INTERVAL = 95
-METRICS = ["loss", "accuracy", "auc", "ap", "f1", "recall", "test"]
-DASH_STYLES = {"random": "", "pretrained": (2, 2)}
+METRIC_CHOICES = ["loss", "accuracy", "auc", "ap", "f1", "recall", "test"]
+CI_CHOICES = [90, 95, 99]
+DASH_STYLE_CHOICES = ["solid", "dashed"]
 
 
 class PlotType(Enum):
@@ -118,22 +111,32 @@ def format_plot_data(df, metric, split_col, plot_type):
     return plot_df, split_name, style_name
 
 
-def get_title(metric_label, plot_type, group):
+def get_title(metric_label, plot_type, group, confidence_interval):
     if plot_type == PlotType.GLOBAL:
-        return f"{metric_label} For All Experiments ({CONFIDENCE_INTERVAL}% CI)"
+        return f"{metric_label} For All Experiments ({confidence_interval}% CI)"
     if plot_type == PlotType.SCALE_COMBINED:
-        return f"{metric_label} Across All Scales ({CONFIDENCE_INTERVAL}% CI)"
+        return f"{metric_label} Across All Scales ({confidence_interval}% CI)"
     if plot_type == PlotType.SCALE_INDIVIDUAL:
-        return f"{metric_label} for Scale: {group} ({CONFIDENCE_INTERVAL}% CI)"
+        return f"{metric_label} for Scale: {group} ({confidence_interval}% CI)"
     if plot_type == PlotType.ARCH_COMBINED:
-        return f"{metric_label} Across Architectures ({CONFIDENCE_INTERVAL}% CI)"
+        return f"{metric_label} Across Architectures ({confidence_interval}% CI)"
     if plot_type == PlotType.ARCH_INDIVIDUAL:
-        return f"{metric_label} for Architecture: {group} ({CONFIDENCE_INTERVAL}% CI)"
+        return f"{metric_label} for Architecture: {group} ({confidence_interval}% CI)"
 
     return f"{metric_label} Plot"
 
 
-def plot_line(df, metric, output_folder, split_col, plot_type, force=False, group=None):
+def plot_line(
+    df,
+    metric,
+    output_folder,
+    split_col,
+    plot_type,
+    confidence_interval,
+    dash_styles,
+    force=False,
+    group=None,
+):
     fname = "hits_at_k.png" if metric == "test" else f"{metric}.png"
     save_path = output_folder / fname
     if save_path.exists() and not force:
@@ -144,7 +147,7 @@ def plot_line(df, metric, output_folder, split_col, plot_type, force=False, grou
     metric_label = (
         metric_label.upper() if len(metric_label) < 4 else metric_label.capitalize()
     )
-    title = get_title(metric_label, plot_type, group)
+    title = get_title(metric_label, plot_type, group, confidence_interval)
 
     plt.figure(figsize=(14, 8))
     sns.set_style("whitegrid")
@@ -155,8 +158,8 @@ def plot_line(df, metric, output_folder, split_col, plot_type, force=False, grou
         y=metric,
         hue=split_name,
         style=style_name,
-        dashes=DASH_STYLES,
-        errorbar=("ci", CONFIDENCE_INTERVAL),
+        dashes=dash_styles,
+        errorbar=("ci", confidence_interval),
         palette="husl",
         linewidth=1.8,
         alpha=0.8,
@@ -175,7 +178,15 @@ def plot_line(df, metric, output_folder, split_col, plot_type, force=False, grou
     plt.close()
 
 
-def generate_section(df, base_path, split_col, force=False):
+def generate_section(
+    df,
+    base_path,
+    split_col,
+    metrics,
+    confidence_interval,
+    dash_styles,
+    force=False,
+):
     # Mapping split columns to PlotTypes
     type_map = {
         "scale": (PlotType.SCALE_COMBINED, PlotType.SCALE_INDIVIDUAL),
@@ -184,14 +195,23 @@ def generate_section(df, base_path, split_col, force=False):
     comb_type, ind_type = type_map[split_col]
 
     print(f"\n  [SUB-SECTION] Combined")
-    for m in METRICS:
+    for m in metrics:
         if m in df.columns:
-            plot_line(df, m, base_path / "combined", split_col, comb_type, force)
+            plot_line(
+                df,
+                m,
+                base_path / "combined",
+                split_col,
+                comb_type,
+                confidence_interval,
+                dash_styles,
+                force,
+            )
 
     print(f"\n  [SUB-SECTION] Individual")
     for group in df[split_col].unique():
         group_df = df[df[split_col] == group]
-        for m in METRICS:
+        for m in metrics:
             if m in group_df.columns:
                 plot_line(
                     group_df,
@@ -199,56 +219,145 @@ def generate_section(df, base_path, split_col, force=False):
                     base_path / "individual" / str(group),
                     "initialization",
                     ind_type,
+                    confidence_interval,
+                    dash_styles,
                     force,
                     group,
                 )
 
 
 def main(args):
+    results_dir = (
+        Path(args.results_dir).expanduser().resolve()
+        if args.results_dir
+        else BASE_DIR / "DDI" / "results" / args.run_name
+    )
+    output_dir = (
+        Path(args.output_dir).expanduser().resolve()
+        if args.output_dir
+        else BASE_DIR / "transfer_learning" / "experiment_results" / args.run_name
+    )
+
+    dash_styles = {
+        "random": "" if args.random_dash_style == "solid" else (2, 2),
+        "pretrained": "" if args.pretrained_dash_style == "solid" else (2, 2),
+    }
+
     for sub in [
         "data",
         "plots/global",
         "plots/split_by_architecture",
         "plots/split_by_scale",
     ]:
-        (OUTPUT_DIR / sub).mkdir(parents=True, exist_ok=True)
+        (output_dir / sub).mkdir(parents=True, exist_ok=True)
 
-    df = load_data(RESULTS_DIR, OUTPUT_DIR / "data", force=args.force)
+    df = load_data(results_dir, output_dir / "data", force=args.force)
     if args.max_epoch is not None:
         print(f"[INFO] Limiting plots to epochs <= {args.max_epoch}")
         df = df[df["epoch"] <= args.max_epoch]
 
     print("\n[SECTION 1/3] Global Aggregate")
-    for m in METRICS:
+    for m in args.metrics:
         if m in df.columns:
             plot_line(
                 df,
                 m,
-                OUTPUT_DIR / "plots" / "global",
+                output_dir / "plots" / "global",
                 "initialization",
                 PlotType.GLOBAL,
+                args.confidence_interval,
+                dash_styles,
                 args.force,
             )
 
     print("\n[SECTION 2/3] Architecture Analysis")
     generate_section(
-        df, OUTPUT_DIR / "plots" / "split_by_architecture", "architecture", args.force
+        df,
+        output_dir / "plots" / "split_by_architecture",
+        "architecture",
+        args.metrics,
+        args.confidence_interval,
+        dash_styles,
+        args.force,
     )
 
     print("\n[SECTION 3/3] Scale Analysis")
-    generate_section(df, OUTPUT_DIR / "plots" / "split_by_scale", "scale", args.force)
+    generate_section(
+        df,
+        output_dir / "plots" / "split_by_scale",
+        "scale",
+        args.metrics,
+        args.confidence_interval,
+        dash_styles,
+        args.force,
+    )
 
-    print(f"\nPipeline Complete. Outputs: {OUTPUT_DIR}")
+    print(f"\nPipeline Complete. Outputs: {output_dir}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Thesis Plotting Suite")
     parser.add_argument(
-        "--force", action="store_true", help="Overwrite existing plots/cache"
+        "--run-name",
+        type=str,
+        required=True,
+        help="Experiment set name used to build default input/output directories.",
+    )
+    parser.add_argument(
+        "--results-dir",
+        type=str,
+        required=False,
+        default=None,
+        help="Optional explicit DDI results directory. Overrides --run-name default path.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        required=False,
+        default=None,
+        help="Optional explicit output directory. Overrides --run-name default path.",
+    )
+    parser.add_argument(
+        "--confidence-interval",
+        type=int,
+        required=False,
+        choices=CI_CHOICES,
+        default=95,
+        help="Confidence interval for seaborn error bands.",
+    )
+    parser.add_argument(
+        "--metrics",
+        nargs="+",
+        required=False,
+        choices=METRIC_CHOICES,
+        default=METRIC_CHOICES,
+        help="Metrics to plot. Provide one or more values.",
+    )
+    parser.add_argument(
+        "--random-dash-style",
+        type=str,
+        required=False,
+        choices=DASH_STYLE_CHOICES,
+        default="solid",
+        help='Line style for "random" initialization curves.',
+    )
+    parser.add_argument(
+        "--pretrained-dash-style",
+        type=str,
+        required=False,
+        choices=DASH_STYLE_CHOICES,
+        default="dashed",
+        help='Line style for "pretrained" initialization curves.',
+    )
+    parser.add_argument(
+        "--force", 
+        action="store_true", 
+        help="Overwrite existing plots/cache",
     )
     parser.add_argument(
         "--max-epoch",
         type=int,
+        required=False,
         default=None,
         help="Maximum epoch to include in plots",
     )
