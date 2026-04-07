@@ -40,7 +40,7 @@ class DatasetHelper:
 
         return dataset, graph.to(self.device), evaluator
 
-    def _split_edges(self, edges, train_ratio=0.8, valid_ratio=0.1, seed=42):
+    def _split_edges(self, edges, seed, train_ratio=0.8, valid_ratio=0.1):
         g = torch.Generator()
         g.manual_seed(seed)
 
@@ -57,7 +57,7 @@ class DatasetHelper:
 
         return train_edges, valid_edges, test_edges
 
-    def _random_negative_edges(self, num_nodes, num_samples, positive_edges, seed=42):
+    def _random_negative_edges(self, num_nodes, num_samples, positive_edges, seed):
         g = torch.Generator()
         g.manual_seed(seed)
 
@@ -77,7 +77,7 @@ class DatasetHelper:
 
         return torch.tensor(neg_edges, dtype=torch.long)
 
-    def get_train_test_val_edge_split(self, dataset, seed=42):
+    def get_train_test_val_edge_split(self, dataset, seed):
         if self.dataset_name in {"biosnapddi", "drugbankddi"}:
             # These datasets already store labels in edge_attr
             train_data = dataset.get(0)
