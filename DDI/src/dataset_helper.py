@@ -4,7 +4,7 @@ from ogb.linkproppred import DglLinkPropPredDataset, Evaluator
 
 from .ddi_dataset import DDIDataset
 from .evaluator import TDCDDIEvaluator
-
+# TODO: try using the tdc library for drugbank ddi instead of the custom DDIDataset class used here s
 
 class DatasetHelper:
     def __init__(self, args, device: str, data_root_path: str):
@@ -36,7 +36,22 @@ class DatasetHelper:
             dataset = DDIDataset(
                 name=self.dataset_name, path=self.data_root_path
             )
-            graph = self.__convert_to_dgl_graph(dataset.get(0))
+            # Match ogbl-ddi: build the message-passing graph from *positive* edges only.
+            # Do NOT add labeled negatives to the adjacency, or link prediction metrics
+            # (AUC/AP) can become artificially inflated.
+            train_data = dataset.get(0)
+            # Important: keep test.csv edges OUT of the training graph adjacency.
+            # This mirrors OGB link prediction datasets where held-out edges are not
+            # present in the message-passing graph used to compute node embeddings.
+            pos_mask = train_data.edge_attr > 0.5
+            pos_edge_index = train_data.edge_index[:, pos_mask]
+
+            n = int(train_data.x.shape[0])
+            graph = dgl.graph(
+                (pos_edge_index[0], pos_edge_index[1]),
+                num_nodes=n,
+            )
+            graph.ndata["feat"] = train_data.x
             evaluator = TDCDDIEvaluator(name="TDC_DDI")
 
         else:
@@ -83,29 +98,34 @@ class DatasetHelper:
 
     def get_train_test_val_edge_split(self, dataset, seed):
         if self.dataset_name in {"biosnapddi", "drugbankddi"}:
-            # These datasets already store labels in edge_attr
+            # These datasets already store labels in edge_attr.
+            # To avoid leakage/inflated metrics, we treat train.csv and test.csv
+            # as distinct splits: train.csv is split into train/valid, and test.csv
+            # remains fully held out as test.
             train_data = dataset.get(0)
             test_data = dataset.get(1)
 
-            all_edge_index = torch.cat(
-                [train_data.edge_index, test_data.edge_index], dim=1
-            )
-            all_edge_attr = torch.cat(
-                [train_data.edge_attr, test_data.edge_attr], dim=0
-            )
-
             # Float labels from CSV: avoid strict == 1 / == 0 (e.g. 0.9999).
-            pos_mask = all_edge_attr > 0.5
-            pos_edges = all_edge_index[:, pos_mask].t().contiguous()
-            neg_edges = all_edge_index[:, ~pos_mask].t().contiguous()
+            train_pos_mask = train_data.edge_attr > 0.5
+            train_pos_edges = train_data.edge_index[:, train_pos_mask].t().contiguous()
+            train_neg_edges = train_data.edge_index[:, ~train_pos_mask].t().contiguous()
 
-            train_pos, valid_pos, test_pos = self._split_edges(pos_edges, seed=seed)
-            train_neg, valid_neg, test_neg = self._split_edges(neg_edges, seed=seed + 1)
+            test_pos_mask = test_data.edge_attr > 0.5
+            test_pos_edges = test_data.edge_index[:, test_pos_mask].t().contiguous()
+            test_neg_edges = test_data.edge_index[:, ~test_pos_mask].t().contiguous()
+
+            # Split only within train.csv into train/valid.
+            train_pos, valid_pos, _ = self._split_edges(
+                train_pos_edges, seed=seed, train_ratio=0.9, valid_ratio=0.1
+            )
+            train_neg, valid_neg, _ = self._split_edges(
+                train_neg_edges, seed=seed + 1, train_ratio=0.9, valid_ratio=0.1
+            )
 
             split_edge = {
                 "train": {"edge": train_pos, "edge_neg": train_neg},
                 "valid": {"edge": valid_pos, "edge_neg": valid_neg},
-                "test": {"edge": test_pos, "edge_neg": test_neg},
+                "test": {"edge": test_pos_edges, "edge_neg": test_neg_edges},
             }
 
         elif self.dataset_name == "ogbl-ddi":
