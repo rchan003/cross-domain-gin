@@ -6,6 +6,12 @@ from torch_geometric.data import Data, Dataset
 
 
 class BioSnapDDIDataset(Dataset):
+    """
+    Train and test CSVs must share one global drug-id space: DatasetHelper concatenates
+    train and test edge_index for splits and trains on a single graph. Building separate
+    per-file node indices (the old behavior) misaligned test edges with the wrong nodes.
+    """
+
     def __init__(self, path, name="biosnapddi", transform=None, pre_transform=None):
         self.name = name
         self.transform = transform
@@ -15,25 +21,30 @@ class BioSnapDDIDataset(Dataset):
         self.test_df = pd.read_csv(f"{path}/{name}/raw/test.csv")
         self.process()
 
+    def _global_smiles_vocab(self):
+        s = set(self.train_df["smile1"].tolist() + self.train_df["smile2"].tolist())
+        s.update(self.test_df["smile1"].tolist())
+        s.update(self.test_df["smile2"].tolist())
+        return sorted(s)
+
     def process(self):
-        # Process training data
-        self.train_data = self._convert_to_pyg_data(self.train_df)
+        global_smiles = self._global_smiles_vocab()
+        self.smiles_to_index = {smile: idx for idx, smile in enumerate(global_smiles)}
 
-        # Process test data
-        self.test_data = self._convert_to_pyg_data(self.test_df)
+        self.train_data = self._convert_to_pyg_data(self.train_df, self.smiles_to_index)
+        self.test_data = self._convert_to_pyg_data(self.test_df, self.smiles_to_index)
 
-    def _convert_to_pyg_data(self, df):
+    def _convert_to_pyg_data(self, df, smiles_to_index):
         smiles1 = df["smile1"].tolist()
         smiles2 = df["smile2"].tolist()
         labels = df["label"].tolist()
 
-        unique_smiles = list(set(smiles1 + smiles2))
-        smiles_to_index = {smile: idx for idx, smile in enumerate(unique_smiles)}
-        node_features = torch.eye(len(unique_smiles))  # One-hot encoding (example)
+        n = len(smiles_to_index)
+        node_features = torch.eye(n)
 
         edge_index = []
         edge_attr = []
-        for i, (smile1, smile2, label) in enumerate(zip(smiles1, smiles2, labels)):
+        for smile1, smile2, label in zip(smiles1, smiles2, labels):
             idx1 = smiles_to_index[smile1]
             idx2 = smiles_to_index[smile2]
             edge_index.append([idx1, idx2])
@@ -44,7 +55,6 @@ class BioSnapDDIDataset(Dataset):
 
         data = Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr)
 
-        # Store SMILES mapping in the Data object (for later retrieval)
         data.smiles_mapping = smiles_to_index
         data.index_to_smiles = {idx: smile for smile, idx in smiles_to_index.items()}
 
@@ -65,7 +75,10 @@ class BioSnapDDIDataset(Dataset):
         return self.len()
 
     def to_dgl_graph(self, pyg_data):
-        g = dgl.graph((pyg_data.edge_index[0], pyg_data.edge_index[1]))
+        n = pyg_data.x.shape[0]
+        g = dgl.graph(
+            (pyg_data.edge_index[0], pyg_data.edge_index[1]), num_nodes=n
+        )
         g.ndata["feat"] = pyg_data.x
         g.edata["label"] = pyg_data.edge_attr
 
@@ -77,7 +90,10 @@ class BioSnapDDIDataset(Dataset):
 
     def to_dgl_graph_with_node_asgraph(self, pyg_data):
         # Convert PyTorch Geometric data to DGL graph
-        g = dgl.graph((pyg_data.edge_index[0], pyg_data.edge_index[1]))
+        n = pyg_data.x.shape[0]
+        g = dgl.graph(
+            (pyg_data.edge_index[0], pyg_data.edge_index[1]), num_nodes=n
+        )
         g.ndata["feat"] = pyg_data.x
 
         # Create a new graph for each node

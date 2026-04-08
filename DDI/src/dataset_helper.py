@@ -13,9 +13,13 @@ class DatasetHelper:
         self.data_root_path = data_root_path
 
     def __convert_to_dgl_graph(self, pyg_data):
-        graph = dgl.graph((pyg_data.edge_index[0], pyg_data.edge_index[1]))
+        u, v = pyg_data.edge_index[0], pyg_data.edge_index[1]
         if hasattr(pyg_data, "x") and pyg_data.x is not None:
+            n = int(pyg_data.x.shape[0])
+            graph = dgl.graph((u, v), num_nodes=n)
             graph.ndata["feat"] = pyg_data.x
+        else:
+            graph = dgl.graph((u, v))
         if hasattr(pyg_data, "edge_attr") and pyg_data.edge_attr is not None:
             graph.edata["label"] = pyg_data.edge_attr
         return graph
