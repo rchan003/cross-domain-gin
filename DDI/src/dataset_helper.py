@@ -2,7 +2,7 @@ import dgl
 import torch
 from ogb.linkproppred import DglLinkPropPredDataset, Evaluator
 
-from .biosnap_data_loader import BioSnapDDIDataset
+from .ddi_dataset import DDIDataset
 from .evaluator import TDCDDIEvaluator
 
 
@@ -33,7 +33,7 @@ class DatasetHelper:
             evaluator = Evaluator(name=dataset.name)
 
         elif self.dataset_name in {"biosnapddi", "drugbankddi"}:
-            dataset = BioSnapDDIDataset(
+            dataset = DDIDataset(
                 name=self.dataset_name, path=self.data_root_path
             )
             graph = self.__convert_to_dgl_graph(dataset.get(0))
@@ -94,8 +94,10 @@ class DatasetHelper:
                 [train_data.edge_attr, test_data.edge_attr], dim=0
             )
 
-            pos_edges = all_edge_index[:, all_edge_attr == 1].t().contiguous()
-            neg_edges = all_edge_index[:, all_edge_attr == 0].t().contiguous()
+            # Float labels from CSV: avoid strict == 1 / == 0 (e.g. 0.9999).
+            pos_mask = all_edge_attr > 0.5
+            pos_edges = all_edge_index[:, pos_mask].t().contiguous()
+            neg_edges = all_edge_index[:, ~pos_mask].t().contiguous()
 
             train_pos, valid_pos, test_pos = self._split_edges(pos_edges, seed=seed)
             train_neg, valid_neg, test_neg = self._split_edges(neg_edges, seed=seed + 1)
@@ -140,5 +142,11 @@ class DatasetHelper:
         idx = torch.randperm(split_edge["train"]["edge"].size(0), generator=g)
         idx = idx[: split_edge["valid"]["edge"].size(0)]
         split_edge["eval_train"] = {"edge": split_edge["train"]["edge"][idx]}
+
+        # Match-size negative pool for eval_train reporting (keeps train pos/neg preds same size)
+        neg_edges = split_edge["train"]["edge_neg"]
+        neg_idx = torch.randperm(neg_edges.size(0), generator=g)
+        neg_idx = neg_idx[: split_edge["eval_train"]["edge"].size(0)]
+        split_edge["eval_train_neg"] = {"edge": neg_edges[neg_idx]}
 
         return split_edge

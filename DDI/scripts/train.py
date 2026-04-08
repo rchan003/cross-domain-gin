@@ -118,7 +118,11 @@ class ModelRunner:
         self.predictor.train()
 
         pos_train_edge = self.split_edge["train"]["edge"].to(self.device)
-        neg_sampler = GlobalUniform(self.num_neg_per_pos)
+        use_csv_negatives = self.dataset_name in {"biosnapddi", "drugbankddi"}
+        if use_csv_negatives:
+            neg_train_edge = self.split_edge["train"]["edge_neg"].to(self.device)
+        else:
+            neg_sampler = GlobalUniform(self.num_neg_per_pos)
 
         total_loss = 0.0
         total_examples = 0
@@ -133,9 +137,17 @@ class ModelRunner:
             pos_edge = pos_train_edge[perm].t()  # shape: [2, B]
             pos_score = self.predictor(h[pos_edge[0]], h[pos_edge[1]])  # shape: [B]
 
-            neg_edge = neg_sampler(
-                self.graph, pos_edge[0]
-            )  # expected shape: [2, B * num_neg_per_pos]
+            if use_csv_negatives:
+                # Train on labeled CSV negatives for TDC-style datasets.
+                neg_count = pos_edge.size(1) * self.num_neg_per_pos
+                neg_perm = torch.randint(
+                    0, neg_train_edge.size(0), (neg_count,), device=self.device
+                )
+                neg_edge = neg_train_edge[neg_perm].t().contiguous()
+            else:
+                neg_edge = neg_sampler(
+                    self.graph, pos_edge[0]
+                )  # expected shape: [2, B * num_neg_per_pos]
             neg_score = self.predictor(
                 h[neg_edge[0]], h[neg_edge[1]]
             )  # shape: [B * num_neg_per_pos]
@@ -196,6 +208,9 @@ class ModelRunner:
             "train": self.__get_batch_predictions_gpu(
                 h, self.split_edge["eval_train"]["edge"]
             ),
+            "train_neg": self.__get_batch_predictions_gpu(
+                h, self.split_edge["eval_train_neg"]["edge"]
+            ),
             "val_pos": self.__get_batch_predictions_gpu(
                 h, self.split_edge["valid"]["edge"]
             ),
@@ -229,7 +244,7 @@ class ModelRunner:
 
         if self.dataset_name != "ogbl-ddi":
             train_hits = self.evaluator.eval(
-                {"y_pred_pos": preds["train"], "y_pred_neg": preds["val_neg"]}
+                {"y_pred_pos": preds["train"], "y_pred_neg": preds["train_neg"]}
             )
             valid_hits = self.evaluator.eval(
                 {"y_pred_pos": preds["val_pos"], "y_pred_neg": preds["val_neg"]}
