@@ -12,6 +12,42 @@ METRIC_CHOICES = ["loss", "accuracy", "auc", "ap", "f1", "recall", "test"]
 CI_CHOICES = [90, 95, 99]
 DASH_STYLE_CHOICES = ["solid", "dashed"]
 
+# DDI CSV logs one row per Hits@K; loss/accuracy/etc. repeat — dedupe for non-test metrics.
+_DEDUP_KEYS = ["run", "epoch", "initialization", "architecture", "scale"]
+
+
+def iter_metrics_with_k(metrics, df):
+    """Yield (metric, test_hits_k) — one plot per K for test when hits@k is present."""
+    for m in metrics:
+        if m not in df.columns:
+            continue
+        if m == "test" and "hits@k" in df.columns:
+            for k in sorted(df["hits@k"].dropna().unique().astype(int)):
+                yield m, int(k)
+        else:
+            yield m, None
+
+
+def prepare_df_for_plot_metric(df, metric, test_hits_k=None):
+    """
+    Match analyze_results: one row per run/epoch/treatment for scalar metrics so CIs are not
+    artificially tight. For test (Hits@K), filter to one K per plot (caller loops all K).
+    """
+    df = df.copy()
+    if not all(k in df.columns for k in _DEDUP_KEYS):
+        return df
+
+    if metric == "test" and "hits@k" in df.columns:
+        if test_hits_k is None:
+            raise ValueError(
+                "metric 'test' with hits@k column requires test_hits_k (internal error)."
+            )
+        return df[df["hits@k"] == test_hits_k].copy()
+
+    if "hits@k" in df.columns:
+        df = df.drop_duplicates(subset=_DEDUP_KEYS, keep="first").copy()
+    return df
+
 
 class PlotType(Enum):
     GLOBAL = auto()
@@ -80,7 +116,12 @@ def load_data(root_dir, data_dir, force=False):
 
 def format_plot_data(df, metric, split_col, plot_type):
     plot_df = df.copy()
-    is_hits = metric == "test" and "hits@k" in plot_df.columns
+    # Multi-K in one frame: hue by K. Single-K plot: hue by split_col (e.g. arch / scale).
+    is_hits = (
+        metric == "test"
+        and "hits@k" in plot_df.columns
+        and plot_df["hits@k"].nunique() > 1
+    )
 
     # Check if this is any of the "Combined" view types
     is_combined = plot_type in [
@@ -111,19 +152,22 @@ def format_plot_data(df, metric, split_col, plot_type):
     return plot_df, split_name, style_name
 
 
-def get_title(metric_label, plot_type, group, confidence_interval):
+def get_title(metric_label, plot_type, group, confidence_interval, test_hits_k=None):
     if plot_type == PlotType.GLOBAL:
-        return f"{metric_label} For All Experiments ({confidence_interval}% CI)"
-    if plot_type == PlotType.SCALE_COMBINED:
-        return f"{metric_label} Across All Scales ({confidence_interval}% CI)"
-    if plot_type == PlotType.SCALE_INDIVIDUAL:
-        return f"{metric_label} for Scale: {group} ({confidence_interval}% CI)"
-    if plot_type == PlotType.ARCH_COMBINED:
-        return f"{metric_label} Across Architectures ({confidence_interval}% CI)"
-    if plot_type == PlotType.ARCH_INDIVIDUAL:
-        return f"{metric_label} for Architecture: {group} ({confidence_interval}% CI)"
-
-    return f"{metric_label} Plot"
+        base = f"{metric_label} For All Experiments ({confidence_interval}% CI)"
+    elif plot_type == PlotType.SCALE_COMBINED:
+        base = f"{metric_label} Across All Scales ({confidence_interval}% CI)"
+    elif plot_type == PlotType.SCALE_INDIVIDUAL:
+        base = f"{metric_label} for Scale: {group} ({confidence_interval}% CI)"
+    elif plot_type == PlotType.ARCH_COMBINED:
+        base = f"{metric_label} Across Architectures ({confidence_interval}% CI)"
+    elif plot_type == PlotType.ARCH_INDIVIDUAL:
+        base = f"{metric_label} for Architecture: {group} ({confidence_interval}% CI)"
+    else:
+        base = f"{metric_label} Plot"
+    if test_hits_k is not None:
+        return f"{base} — Hits@K={test_hits_k}"
+    return base
 
 
 def plot_line(
@@ -136,10 +180,21 @@ def plot_line(
     dash_styles,
     force=False,
     group=None,
+    test_hits_k=None,
 ):
-    fname = "hits_at_k.png" if metric == "test" else f"{metric}.png"
+    if metric == "test" and test_hits_k is not None:
+        fname = f"test_k{test_hits_k}.png"
+    elif metric == "test":
+        fname = "test.png"
+    else:
+        fname = f"{metric}.png"
     save_path = output_folder / fname
     if save_path.exists() and not force:
+        return
+
+    df = prepare_df_for_plot_metric(df, metric, test_hits_k)
+    if df.empty:
+        print(f"[WARN] Skipping plot (no rows): metric={metric}, path={save_path}")
         return
 
     plot_df, split_name, style_name = format_plot_data(df, metric, split_col, plot_type)
@@ -147,7 +202,9 @@ def plot_line(
     metric_label = (
         metric_label.upper() if len(metric_label) < 4 else metric_label.capitalize()
     )
-    title = get_title(metric_label, plot_type, group, confidence_interval)
+    title = get_title(
+        metric_label, plot_type, group, confidence_interval, test_hits_k=test_hits_k
+    )
 
     plt.figure(figsize=(14, 8))
     sns.set_style("whitegrid")
@@ -195,35 +252,35 @@ def generate_section(
     comb_type, ind_type = type_map[split_col]
 
     print(f"\n  [SUB-SECTION] Combined")
-    for m in metrics:
-        if m in df.columns:
-            plot_line(
-                df,
-                m,
-                base_path / "combined",
-                split_col,
-                comb_type,
-                confidence_interval,
-                dash_styles,
-                force,
-            )
+    for m, test_k in iter_metrics_with_k(metrics, df):
+        plot_line(
+            df,
+            m,
+            base_path / "combined",
+            split_col,
+            comb_type,
+            confidence_interval,
+            dash_styles,
+            force,
+            test_hits_k=test_k,
+        )
 
     print(f"\n  [SUB-SECTION] Individual")
     for group in df[split_col].unique():
         group_df = df[df[split_col] == group]
-        for m in metrics:
-            if m in group_df.columns:
-                plot_line(
-                    group_df,
-                    m,
-                    base_path / "individual" / str(group),
-                    "initialization",
-                    ind_type,
-                    confidence_interval,
-                    dash_styles,
-                    force,
-                    group,
-                )
+        for m, test_k in iter_metrics_with_k(metrics, group_df):
+            plot_line(
+                group_df,
+                m,
+                base_path / "individual" / str(group),
+                "initialization",
+                ind_type,
+                confidence_interval,
+                dash_styles,
+                force,
+                group,
+                test_hits_k=test_k,
+            )
 
 
 def main(args):
@@ -257,18 +314,18 @@ def main(args):
         df = df[df["epoch"] <= args.max_epoch]
 
     print("\n[SECTION 1/3] Global Aggregate")
-    for m in args.metrics:
-        if m in df.columns:
-            plot_line(
-                df,
-                m,
-                output_dir / "plots" / "global",
-                "initialization",
-                PlotType.GLOBAL,
-                args.confidence_interval,
-                dash_styles,
-                args.force,
-            )
+    for m, test_k in iter_metrics_with_k(args.metrics, df):
+        plot_line(
+            df,
+            m,
+            output_dir / "plots" / "global",
+            "initialization",
+            PlotType.GLOBAL,
+            args.confidence_interval,
+            dash_styles,
+            args.force,
+            test_hits_k=test_k,
+        )
 
     print("\n[SECTION 2/3] Architecture Analysis")
     generate_section(

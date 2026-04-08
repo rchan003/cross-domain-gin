@@ -47,8 +47,30 @@ def get_effect_size_label(d_val, small_threshold, medium_threshold, large_thresh
 # ----------------------------------------------------------------
 
 
-def run_pointwise_analysis(df, metric, output_subfolder, p_value_threshold):
+def _prepare_df_for_metric(df, metric, hits_k=None):
+    """
+    Log CSV repeats loss/accuracy/etc. once per Hits@K row; for non-hits metrics,
+    keep one row per (run, epoch, treatment, arch, scale) so t-tests are not inflated.
+    For hits_at_k, caller passes hits_k to restrict to that K (analysis runs for every K).
+    """
+    if metric == "hits_at_k":
+        if hits_k is None:
+            raise ValueError("hits_at_k analysis requires a concrete hits_k value.")
+        if "hits@k" not in df.columns:
+            return df
+        out = df[df["hits@k"] == hits_k].copy()
+        if out.empty:
+            raise ValueError(f"No rows with hits@k == {hits_k}.")
+        return out
+    cols = ["run", "epoch", "initialization", "architecture", "scale"]
+    if "hits@k" in df.columns and all(c in df.columns for c in cols):
+        return df.drop_duplicates(subset=cols, keep="first").copy()
+    return df
+
+
+def run_pointwise_analysis(df, metric, output_subfolder, p_value_threshold, hits_k=None):
     """Calculates p-values for every epoch across all groups."""
+    df = _prepare_df_for_metric(df, metric, hits_k)
     is_high_better = False if metric == "loss" else True
     results = []
 
@@ -84,21 +106,24 @@ def run_pointwise_analysis(df, metric, output_subfolder, p_value_threshold):
         sig_df = pd.DataFrame(epoch_sig_data)
         if not sig_df.empty:
             sig_only = sig_df[sig_df["is_significant"]]
-            results.append(
-                {
-                    "Analysis_Scope": scope,
-                    "Group_Value": label,
-                    "Metric": metric,
-                    "Onset_Epoch": (
-                        sig_only["epoch"].min() if not sig_only.empty else None
-                    ),
-                    "Total_Sig_Epochs": len(sig_only),
-                    "Significant_at_End": sig_df.iloc[-1]["is_significant"],
-                }
-            )
+            label_safe = str(label).replace(" ", "_").replace("/", "-")
+            row = {
+                "Analysis_Scope": scope,
+                "Group_Value": label,
+                "Metric": metric,
+                "Onset_Epoch": (
+                    sig_only["epoch"].min() if not sig_only.empty else None
+                ),
+                "Total_Sig_Epochs": len(sig_only),
+                "Significant_at_End": sig_df.iloc[-1]["is_significant"],
+            }
+            if metric == "hits_at_k":
+                row["Hits@K"] = hits_k
+            results.append(row)
 
             # Save raw p-values for plotting ribbons later
-            raw_path = output_subfolder / f"pvals_{metric}_{label}.csv"
+            k_suffix = f"_k{hits_k}" if metric == "hits_at_k" else ""
+            raw_path = output_subfolder / f"pvals_{metric}_{label_safe}{k_suffix}.csv"
             sig_df.to_csv(raw_path, index=False)
 
     return results
@@ -114,9 +139,11 @@ def run_impact_analysis(
     large_threshold,
     group_col=None,
     group_val=None,
+    hits_k=None,
 ):
     """Calculates Best-Performance P-value and Cohen's d."""
     sub_df = df[df[group_col] == group_val] if group_col else df
+    sub_df = _prepare_df_for_metric(sub_df, metric, hits_k)
     is_high_better = False if metric == "loss" else True
 
     # Extract peak performance per run
@@ -142,10 +169,26 @@ def run_impact_analysis(
     _, p_val = stats.ttest_ind(pre_scores, rand_scores, equal_var=False)
     d_val = calculate_cohens_d(pre_scores, rand_scores)
 
+    conclusion = "Not Significant"
+    if p_val < p_value_threshold:
+        if is_high_better:
+            conclusion = (
+                "Significant (pretrained higher)"
+                if pre_scores.mean() > rand_scores.mean()
+                else "Significant (pretrained lower)"
+            )
+        else:
+            conclusion = (
+                "Significant (pretrained lower)"
+                if pre_scores.mean() < rand_scores.mean()
+                else "Significant (pretrained higher)"
+            )
+
     return {
         "Analysis_Scope": scope_label,
         "Group_Value": group_val if group_val else "All Data",
         "Metric": metric,
+        "Hits@K_Used": hits_k if metric == "hits_at_k" else None,
         "Pretrain_Best_Mean": pre_scores.mean(),
         "Random_Best_Mean": rand_scores.mean(),
         "P_Value": p_val,
@@ -153,7 +196,7 @@ def run_impact_analysis(
         "Effect_Size": get_effect_size_label(
             d_val, small_threshold, medium_threshold, large_threshold
         ),
-        "Conclusion": "Significant" if p_val < p_value_threshold else "Not Significant",
+        "Conclusion": conclusion,
     }
 
 
@@ -191,27 +234,72 @@ def main(args):
     for m in metrics_to_run:
         if m not in df.columns:
             continue
+
+        if m == "hits_at_k" and "hits@k" in df.columns:
+            k_values = sorted(df["hits@k"].dropna().unique().astype(int).tolist())
+            for k in k_values:
+                print(f"Processing Metric: HITS_AT_K (Hits@K={k})")
+
+                pointwise_results.extend(
+                    run_pointwise_analysis(
+                        df,
+                        m,
+                        raw_pvals_dir,
+                        args.p_value_threshold,
+                        hits_k=k,
+                    )
+                )
+
+                res_global = run_impact_analysis(
+                    df,
+                    m,
+                    "Global",
+                    args.p_value_threshold,
+                    args.effect_size_small,
+                    args.effect_size_medium,
+                    args.effect_size_large,
+                    hits_k=k,
+                )
+                if res_global:
+                    impact_results.append(res_global)
+                for split in ["architecture", "scale"]:
+                    for val in df[split].unique():
+                        res = run_impact_analysis(
+                            df,
+                            m,
+                            split,
+                            args.p_value_threshold,
+                            args.effect_size_small,
+                            args.effect_size_medium,
+                            args.effect_size_large,
+                            split,
+                            val,
+                            hits_k=k,
+                        )
+                        if res:
+                            impact_results.append(res)
+            continue
+
         print(f"Processing Metric: {m.upper()}")
 
-        # 1. Pointwise (All Epochs) Analysis
         pointwise_results.extend(
-            run_pointwise_analysis(df, m, raw_pvals_dir, args.p_value_threshold)
-        )
-
-        # 2. Impact (Best Performance) Analysis
-        # Global
-        impact_results.append(
-            run_impact_analysis(
-                df,
-                m,
-                "Global",
-                args.p_value_threshold,
-                args.effect_size_small,
-                args.effect_size_medium,
-                args.effect_size_large,
+            run_pointwise_analysis(
+                df, m, raw_pvals_dir, args.p_value_threshold, hits_k=None
             )
         )
-        # Groups
+
+        res_global = run_impact_analysis(
+            df,
+            m,
+            "Global",
+            args.p_value_threshold,
+            args.effect_size_small,
+            args.effect_size_medium,
+            args.effect_size_large,
+            hits_k=None,
+        )
+        if res_global:
+            impact_results.append(res_global)
         for split in ["architecture", "scale"]:
             for val in df[split].unique():
                 res = run_impact_analysis(
@@ -224,6 +312,7 @@ def main(args):
                     args.effect_size_large,
                     split,
                     val,
+                    hits_k=None,
                 )
                 if res:
                     impact_results.append(res)
@@ -236,7 +325,10 @@ def main(args):
     impact_df["Analysis_Scope"] = pd.Categorical(
         impact_df["Analysis_Scope"], categories=scope_order, ordered=True
     )
-    impact_df = impact_df.sort_values(["Analysis_Scope", "Metric", "Group_Value"])
+    sort_cols = ["Analysis_Scope", "Metric", "Group_Value"]
+    if "Hits@K_Used" in impact_df.columns:
+        sort_cols.insert(-1, "Hits@K_Used")
+    impact_df = impact_df.sort_values(sort_cols)
     impact_df.to_csv(output_dir / "master_impact_report.csv", index=False)
 
     # Save Significance Report
@@ -244,9 +336,10 @@ def main(args):
     sig_report_df["Analysis_Scope"] = pd.Categorical(
         sig_report_df["Analysis_Scope"], categories=scope_order, ordered=True
     )
-    sig_report_df = sig_report_df.sort_values(
-        ["Analysis_Scope", "Metric", "Group_Value"]
-    )
+    sig_sort = ["Analysis_Scope", "Metric", "Group_Value"]
+    if "Hits@K" in sig_report_df.columns:
+        sig_sort.insert(-1, "Hits@K")
+    sig_report_df = sig_report_df.sort_values(sig_sort)
     sig_report_df.to_csv(output_dir / "complete_significance_report.csv", index=False)
 
     print(f"\n[DONE] Analysis complete.")
