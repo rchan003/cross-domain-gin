@@ -1,4 +1,4 @@
-import os
+import re
 import sys
 from pathlib import Path
 
@@ -10,6 +10,17 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 
 from DDI.src.models import DGLGraphModel
+
+# Torchview always appends "depth:i" to HTML node labels (see computation_graph.get_node_label).
+_DEPTH_LABEL_HTML_RE = re.compile(r"<BR\s*/?>depth:\s*\d+", re.IGNORECASE)
+
+
+def strip_torchview_depth_labels(computation_graph) -> None:
+    """Remove depth:index lines from torchview HTML labels in the Graphviz source."""
+    digraph = computation_graph.visual_graph
+    if not getattr(digraph, "body", None):
+        return
+    digraph.body = [_DEPTH_LABEL_HTML_RE.sub("", line) for line in digraph.body]
 
 
 def build_dummy_graph(num_nodes: int = 6):
@@ -32,12 +43,20 @@ def visualize_with_torchview(
     filename: str,
     depth: int = 10,
     graph_dir: str = "TB",
+    show_shapes: bool = False,
+    show_depth_in_labels: bool = False,
 ):
     """
     Creates a structural model diagram with torchview.
 
     graph_dir: torchview / Graphviz layout — 'LR' (left-to-right, horizontal),
     'TB' (top-to-bottom, vertical), 'RL', or 'BT'.
+
+    Tensor shapes are hidden (show_shapes=False) so nodes emphasize module names.
+
+    Torchview always adds depth:index inside HTML labels; set show_depth_in_labels=False
+    (default) to strip those before rendering. Use save_graph=False here so rendering
+    happens once after stripping (torchview's save_graph would render too early).
     """
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -47,14 +66,17 @@ def visualize_with_torchview(
         expand_nested=True,
         depth=depth,
         graph_name=f"{filename}_depth{depth}",
-        save_graph=True,
+        save_graph=False,
         directory=str(out_dir),
         filename=f"{filename}_depth{depth}",
         device=features.device,
         graph_dir=graph_dir,
+        show_shapes=show_shapes,
     )
 
-    # Optional: save a PNG as well if supported in your environment
+    if not show_depth_in_labels:
+        strip_torchview_depth_labels(graph_viz)
+
     try:
         graph_viz.visual_graph.render(
             filename=f"{filename}_depth{depth}",
@@ -76,6 +98,7 @@ def main():
     num_layers = 4
     output_features = 4
 
+    show_shapes = False
     depths = [1, 2, 3, 4]
     # Diagram flow: "horizontal" (left-to-right) or "vertical" (top-to-bottom)
     diagram_layout = "horizontal"
@@ -107,6 +130,9 @@ def main():
     print("Generating diagrams...")
 
     for depth in depths:
+        if depth > 1: 
+            graph_dir = "TB" # todo: remove later 
+        
         visualize_with_torchview(
             model_gin,
             g2,
@@ -115,6 +141,7 @@ def main():
             "dgl_graph_model_gin_torchview",
             depth=depth,
             graph_dir=graph_dir,
+            show_shapes=show_shapes,
         )
 
     print(f"Saved diagrams to: {out_dir}")
