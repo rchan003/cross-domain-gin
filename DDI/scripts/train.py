@@ -1,7 +1,6 @@
 import argparse
 import gc
 import os
-import random
 import sys
 import time
 from pathlib import Path

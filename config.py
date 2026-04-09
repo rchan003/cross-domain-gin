@@ -14,13 +14,17 @@ See more details about the parameters in the JSSP/train.py and DDI/train.py scri
 
 JSSP_BATCH_SIZE = 64  # Number of JSSP instances solved in parallel per training batch.
 JSSP_NUM_EPOCHS = 1  # Runner-level epoch count used to derive total episodes.
-JSSP_NUM_EPISODES = JSSP_BATCH_SIZE * JSSP_NUM_EPOCHS  # Total episodes = batch_size * num_epochs.
+JSSP_NUM_EPISODES = (
+    JSSP_BATCH_SIZE * JSSP_NUM_EPOCHS
+)  # Total episodes = batch_size * num_epochs.
 
 # JSSP_SEARCH_SPACE: Combination of parameter values to try in the JSSP experiments.
-# Each combination of values is an experiment, thus the number of experiments is the 
+# Each combination of values is an experiment, thus the number of experiments is the
 # product of the lengths of the lists in the SEARCH_SPACE.
 JSSP_SEARCH_SPACE = {
-    "embedding_type": ["gin"],  # Encoder variant(s); choices: "gin", "dghan", "gin+dghan".
+    "embedding_type": [
+        "gin"
+    ],  # Encoder variant(s); choices: "gin", "dghan", "gin+dghan".
     "hidden_dim": [128],  # Hidden feature width for encoder/policy layers.
     "lr": [1e-4],  # Learning rate values to sweep.
     "embedding_layer": [3],  # Number of encoder layers (GIN/DGHAN depth).
@@ -50,27 +54,44 @@ JSSP_FIXED_PARAMS = {
 # DDI: Configurations for `DDI/scripts/run_experiments.py`
 # ============================================================================
 
-DDI_EXPERIMENT_SET_NAME = "ogbl-ddi-random-sampling"  # Descriptive name for this set of experiments.
+DDI_EXPERIMENT_SET_NAME = (
+    "biosnapddi-random-sampling"  # Descriptive name for this set of experiments.
+)
 DDI_SAVE_RESULTS = True  # Whether DDI train runs should save logs/summaries.
 
 # DDI_SEARCH_SPACE: Combination of parameter values to try in the DDI experiments.
-# Each combination of values is an experiment, thus the number of experiments is the 
+# Each combination of values is an experiment, thus the number of experiments is the
 # product of the lengths of the lists in the SEARCH_SPACE.
 DDI_SEARCH_SPACE = {
-    "init_mode": ["pretrained", "random"],  # Initialization modes to compare; choices: "pretrained", "random".
+    "init_mode": [
+        "pretrained",
+        "random",
+    ],  # Initialization modes to compare; choices: "pretrained", "random".
 }
 
 # DDI_FIXED_PARAMS: Parameter values that are fixed for all DDI experiments.
 DDI_FIXED_PARAMS = {
-    "dataset": "ogbl-ddi",  # Dataset choice; choices: "ogbl-ddi", "drugbankddi", "biosnapddi".
+    "dataset": "biosnapddi",  # Dataset choice; choices: "ogbl-ddi", "drugbankddi", "biosnapddi".
     "loss_function": "binary_cross_entropy",  # Loss; choices: "pairwise_ranking", "binary_cross_entropy".
     "runs": 20,  # Number of repeated runs per configuration.
     "device": 0,  # CUDA device index; use -1 in DDI train.py for CPU.
-    "batch_size": 18000,  # Positive-edge minibatch size used during training.
+    "batch_size": 2000,  # Positive-edge minibatch size used during training.
     "epochs": 25,  # Number of epochs per run.
     "eval_steps": 1,  # Evaluate every N epochs.
-    "lr": 1e-6,  # Learning rate for Adam optimizer.
+    "lr": 3e-7,  # Learning rate for Adam optimizer.
     "dropout": 0.1,  # Dropout in link predictor MLP.
     "num_neg_per_pos": 1,  # Number of negatives sampled per positive edge.
     "save_results": DDI_SAVE_RESULTS,  # Forwarded save flag to DDI train.py.
 }
+
+# # OGBL-DDI: tuned parameters for OGBL-DDI dataset
+#     "batch_size": 18000
+#     "lr": 1e-6
+
+# # DrugBankDDI: tuned parameters for DrugBankDDI dataset
+#     "batch_size": 2048
+#     "lr": 1e-5
+
+# # BioSnapDDI: tuned parameters for BioSnapDDI dataset
+#     "batch_size": 2000
+#     "lr": 3e-7
