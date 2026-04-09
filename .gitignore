@@ -4,10 +4,10 @@ settings.json
 
 # JSSP
 JSSP/logs/*
-JSSP/results/*
 
 # DDI 
 DDI/logs/*
 DDI/results/*
 
-transfer_learning/analysis/*
+# Ignore all non-final experiment results
+transfer_learning/experiment_results/*
